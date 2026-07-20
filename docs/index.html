@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Código Python — Trabajo Final PLN (MIA-10)</title>
+<style>
+  :root{
+    --navy:#16324f; --navy2:#1f3b63; --coral:#e8604c; --coral-d:#c9482f;
+    --ink:#1a2733; --muted:#5a6b7c; --bg:#f4f6f9; --card:#ffffff;
+    --border:#d8e0e8; --code-bg:#0f2136; --code-ink:#e6edf3; --ok:#1f8a54;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --ink:#e7edf3; --muted:#9fb0c0; --bg:#0d1620; --card:#15222f;
+      --border:#263644; --code-bg:#0a1420; --code-ink:#dce6f0;
+    }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       background:var(--bg);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:960px;margin:0 auto;padding:0 20px 80px}
+  header.hero{background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);color:#fff;
+       padding:44px 20px 40px;margin-bottom:34px}
+  .hero-inner{max-width:960px;margin:0 auto}
+  .kicker{text-transform:uppercase;letter-spacing:.14em;font-size:12.5px;opacity:.85;font-weight:600}
+  h1{font-size:clamp(24px,4vw,36px);margin:10px 0 8px;line-height:1.2}
+  .sub{opacity:.92;font-size:16px;max-width:70ch}
+  .meta{margin-top:18px;font-size:13.5px;opacity:.85}
+  .meta b{opacity:1}
+  h2{font-size:22px;margin:38px 0 6px;color:var(--navy);border-left:4px solid var(--coral);padding-left:12px}
+  @media (prefers-color-scheme: dark){h2{color:#cdddef}}
+  h3{font-size:16.5px;margin:22px 0 4px}
+  p{margin:8px 0}
+  .lead{color:var(--muted)}
+  a{color:var(--coral-d);text-decoration:none;font-weight:600}
+  a:hover{text-decoration:underline}
+  @media (prefers-color-scheme: dark){a{color:#ff8b76}}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px 22px;margin:14px 0}
+  .banner{background:var(--card);border:1px solid var(--border);border-left:5px solid var(--coral);
+       border-radius:10px;padding:14px 18px;margin:16px 0;font-size:14.5px}
+  .banner.ok{border-left-color:var(--ok)}
+  .grid{display:grid;gap:14px}
+  .step{display:grid;grid-template-columns:44px 1fr;gap:14px;align-items:start}
+  .num{width:38px;height:38px;border-radius:50%;background:var(--navy);color:#fff;display:flex;
+       align-items:center;justify-content:center;font-weight:700;font-size:16px;flex:0 0 auto}
+  .num.coral{background:var(--coral)}
+  .fname{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:13.5px;font-weight:700;color:var(--navy);
+       display:inline-block}
+  @media (prefers-color-scheme: dark){.fname{color:#8fd0ff}}
+  .tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+       padding:2px 9px;border-radius:999px;background:#eaf0f6;color:var(--navy);margin-left:8px;vertical-align:middle}
+  @media (prefers-color-scheme: dark){.tag{background:#21344a;color:#bcd6f2}}
+  .tag.oe2{background:#fde8e3;color:var(--coral-d)}
+  @media (prefers-color-scheme: dark){.tag.oe2{background:#3a241f;color:#ffab97}}
+  .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:10px;border:1px solid var(--border)}
+  table{border-collapse:collapse;width:100%;min-width:520px;font-size:14.5px}
+  th,td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--border)}
+  thead th{background:var(--navy);color:#fff;font-size:13px;letter-spacing:.02em}
+  tbody tr:nth-child(even){background:rgba(0,0,0,.02)}
+  @media (prefers-color-scheme: dark){tbody tr:nth-child(even){background:rgba(255,255,255,.03)}}
+  tr.win td{background:var(--coral);color:#fff;font-weight:700}
+  tr.win a{color:#fff;text-decoration:underline}
+  td.num-c{text-align:center;font-variant-numeric:tabular-nums}
+  pre{background:var(--code-bg);color:var(--code-ink);border-radius:10px;padding:16px 18px;overflow-x:auto;
+      font-family:"SF Mono",Menlo,Consolas,monospace;font-size:13px;line-height:1.55;margin:10px 0}
+  pre .c{color:#7fa7c9}
+  .linklist{list-style:none;padding:0;margin:8px 0}
+  .linklist li{padding:9px 0;border-bottom:1px dashed var(--border)}
+  .linklist li:last-child{border-bottom:0}
+  .linklist .d{color:var(--muted);font-size:13.5px}
+  .pill{display:inline-block;background:var(--navy);color:#fff;font-size:12.5px;font-weight:700;
+        padding:6px 14px;border-radius:8px;margin:4px 6px 4px 0}
+  .pill a{color:#fff}
+  footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--border);color:var(--muted);font-size:13px}
+  .small{font-size:13px;color:var(--muted)}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media (max-width:640px){.cols{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="hero-inner">
+    <div class="kicker">Curso MIA-10 · Procesamiento del Lenguaje Natural · Dr. Wester Zela Moraya</div>
+    <h1>Detección Automática de Eventos Adversos Hospitalarios en Epicrisis mediante PLN</h1>
+    <p class="sub">Código Python ejecutado, resultados y guía de reproducción. Todo el código es
+    <b>público y verificable</b> en GitHub. Autor: Carlos Pérez Pérez — Maestría en Inteligencia Artificial, UNI.</p>
+    <div class="meta"><b>Repositorio:</b> PLN_SP &nbsp;·&nbsp; <b>Corrida:</b> 04/07/2026 &nbsp;·&nbsp; <b>Dataset:</b> MIMIC-IV-Note v2.2 (331,793 epicrisis)</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="pill"><a href="https://github.com/carlosperez100/PLN_SP">📦 Repositorio completo en GitHub</a></div>
+  <div class="pill"><a href="https://github.com/carlosperez100/PLN_SP/tree/main/codigo">📂 Carpeta del código (codigo)</a></div>
+  <div class="pill"><a href="https://github.com/carlosperez100/PLN_SP/blob/main/resultados/RESULTADOS_FASE4.md">📊 Resultados (RESULTADOS_FASE4.md)</a></div>
+
+  <h2>Qué se corrió, en una frase</h2>
+  <p class="lead">Se comparó, sobre <b>14,853 epicrisis reales</b> de MIMIC-IV (12,785 pacientes),
+  tres enfoques de PLN para clasificar la <b>naturaleza del evento adverso</b> (8 clases del Anexo 02
+  GG-ESSALUD-2021): un modelo léxico clásico (<b>TF-IDF</b> con regresión logística y con LinearSVC) frente a
+  un <b>transformer clínico</b> (Bio_ClinicalBERT). El pipeline está escrito en Python con
+  <b>scikit-learn</b>, <b>gensim/NLTK</b> y <b>Hugging Face Transformers</b>.</p>
+
+  <div class="banner ok">
+    <b>Todo el código es público.</b> Los 7 scripts y el informe de resultados están versionados en GitHub y
+    se pueden abrir y leer sin credenciales. Lo único que <i>no</i> se publica es el texto clínico
+    (dataset <code>.parquet</code>) y el modelo entrenado (<code>.pkl</code>), porque el
+    <b>Data Use Agreement (DUA) de MIMIC-IV lo prohíbe</b> — eso es una exigencia ética/legal, no una omisión.
+  </div>
+
+  <h2>Los scripts de Python (en orden de ejecución)</h2>
+
+  <div class="card grid">
+    <div class="step">
+      <div class="num">3</div>
+      <div>
+        <a class="fname" href="https://github.com/carlosperez100/PLN_SP/blob/main/codigo/fase3_corpus_expansion.py">fase3_corpus_expansion.py</a>
+        <span class="tag">Corpus</span>
+        <p class="small">Construye el corpus. Recorre las 331,793 notas de alta de MIMIC-IV y detecta eventos con
+        <b>Tier A</b> (223 códigos ICD-10), <b>Tier B</b> (35 patrones de texto / expresiones regulares) y filtro
+        <b>NegEx</b> para descartar negaciones ("sin infección"). Salida: 14,863 notas candidatas + muestra
+        estratificada de 350 notas para anotación experta.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="num coral">4</div>
+      <div>
+        <a class="fname" href="https://github.com/carlosperez100/PLN_SP/blob/main/codigo/fase4_entrenar_baseline.py">fase4_entrenar_baseline.py</a>
+        <span class="tag oe2">OE2 · Modelos</span>
+        <p class="small">El corazón del trabajo. Une el texto de <code>discharge.csv.gz</code> con la etiqueta débil,
+        vectoriza con <b>TF-IDF</b> (palabra 1–2 gramas, 30,000 features, <code>class_weight="balanced"</code>) y
+        entrena/compara <b>Regresión Logística</b> vs <b>LinearSVC</b>. Guarda métricas y el mejor modelo.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="num coral">4</div>
+      <div>
+        <a class="fname" href="https://github.com/carlosperez100/PLN_SP/blob/main/codigo/fase4_clinicalbert.py">fase4_clinicalbert.py</a>
+        <span class="tag oe2">OE2 · BERT</span>
+        <p class="small">El tercer modelo: <b>Bio_ClinicalBERT</b> (emilyalsentzer, Hugging Face) como extractor de
+        embeddings congelado (mean-pooling) + cabezal LogReg, sobre submuestra estratificada. Demuestra la
+        factibilidad del transformer sin GPU.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="num coral">4</div>
+      <div>
+        <a class="fname" href="https://github.com/carlosperez100/PLN_SP/blob/main/codigo/fase4_crossval.py">fase4_crossval.py</a>
+        <span class="tag oe2">OE2 · Robustez</span>
+        <p class="small">Validación cruzada <b>5-fold</b> (StratifiedKFold) que reporta media ± desviación de
+        accuracy, F1-ponderado, F1-macro y Kappa. Prueba la config reforzada TF-IDF palabra + <b>char n-gramas</b> (3–5).</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="num coral">4</div>
+      <div>
+        <a class="fname" href="https://github.com/carlosperez100/PLN_SP/blob/main/codigo/fase4_split_paciente.py">fase4_split_paciente.py</a>
+        <span class="tag oe2">OE2 · Rigor</span>
+        <p class="small">Corrección metodológica: rehace todo con <b>split a nivel de paciente</b> (GroupShuffleSplit
+        por <code>subject_id</code>) para evitar fuga de datos, y añade CV agrupada (StratifiedGroupKFold) + matriz de confusión.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="num coral">4</div>
+      <div>
+        <a class="fname" href="https://github.com/carlosperez100/PLN_SP/blob/main/codigo/fase4_circularidad.py">fase4_circularidad.py</a>
+        <span class="tag oe2">OE2 · Auditoría</span>
+        <p class="small">Experimento de honestidad científica: enmascara (<code>__MASK__</code>) los 35 disparadores Tier B
+        y reentrena, para medir cuánto del acierto viene del patrón literal vs. del contexto. Resultado: solo cae 1.35 pts.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="num coral">4</div>
+      <div>
+        <a class="fname" href="https://github.com/carlosperez100/PLN_SP/blob/main/codigo/fase4_multietiqueta.py">fase4_multietiqueta.py</a>
+        <span class="tag oe2">OE2 · Multi-label</span>
+        <p class="small">Reformula la tarea como <b>multi-etiqueta</b> (una nota puede tener varias naturalezas, el 30.9% las tiene)
+        con TF-IDF + <b>OneVsRestClassifier(LinearSVC)</b>. Métricas: F1-micro/macro, Hamming loss, exact-match.</p>
+      </div>
+    </div>
+  </div>
+
+  <h2>Resultados obtenidos</h2>
+  <p class="lead">Comparación de modelos (validación cruzada 5-fold, con partición por paciente). Fuente:
+  <a href="https://github.com/carlosperez100/PLN_SP/blob/main/resultados/RESULTADOS_FASE4.md">RESULTADOS_FASE4.md</a>.</p>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Modelo</th><th>Exactitud</th><th>F1-macro</th><th>Kappa</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>TF-IDF + Regresión Logística (baseline)</td><td class="num-c">0.628</td><td class="num-c">0.466</td><td class="num-c">0.474</td></tr>
+        <tr class="win"><td>★ TF-IDF + LinearSVC (palabra + char)</td><td class="num-c">0.731</td><td class="num-c">0.515</td><td class="num-c">0.581</td></tr>
+        <tr><td>Bio_ClinicalBERT congelado + LogReg (sin fine-tuning)</td><td class="num-c">0.38</td><td class="num-c">0.19</td><td class="num-c">0.18</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="banner">
+    <b>Hallazgo principal:</b> en una tarea definida por patrones léxicos, el modelo clásico <b>superó</b> al transformer
+    clínico congelado. La hipótesis inicial (ClinicalBERT &gt; baseline) se <b>refutó</b>: sin fine-tuning, BERT quedó último.
+    La <b>lectura honesta</b> es el F1-macro (~0.51), no el F1-ponderado, y la etiqueta débil tiene circularidad estructural
+    → las cifras miden consistencia con la regla, no validez clínica. Reformulación multi-etiqueta: F1-micro 0.751.
+  </div>
+
+  <h2>Cómo se corrió (entorno y comandos)</h2>
+  <p class="lead">Todo se ejecutó localmente en Windows con Anaconda (Python 3.13). Estas son las librerías y los comandos exactos:</p>
+  <pre><span class="c"># Entorno: Anaconda 3 (Python 3.13) — 100% software libre</span>
+<span class="c"># Librerías: scikit-learn 1.7.2 · torch 2.12.1 (CPU) · transformers 5.13.0 · pandas · nltk · gensim</span>
+
+<span class="c"># Variable necesaria en Windows para evitar el conflicto de OpenMP:</span>
+set KMP_DUPLICATE_LIB_OK=TRUE
+
+<span class="c"># 1) Construir el corpus desde MIMIC-IV (Tier A/B + NegEx)</span>
+python fase3_corpus_expansion.py
+
+<span class="c"># 2) Entrenar y comparar los modelos (OE2)</span>
+python fase4_entrenar_baseline.py     <span class="c"># TF-IDF + LogReg vs LinearSVC</span>
+python fase4_crossval.py              <span class="c"># validación cruzada 5-fold</span>
+python fase4_clinicalbert.py          <span class="c"># Bio_ClinicalBERT (descarga ~440 MB la 1.ª vez)</span>
+python fase4_split_paciente.py        <span class="c"># split por paciente (sin fuga)</span>
+python fase4_circularidad.py          <span class="c"># experimento de enmascaramiento</span>
+python fase4_multietiqueta.py         <span class="c"># reformulación multi-etiqueta</span></pre>
+
+  <h2>Si el profesor quiere ver la demostración en vivo</h2>
+  <div class="cols">
+    <div class="card">
+      <h3>Opción A — Leer/mostrar el código (inmediata)</h3>
+      <p class="small">Todos los scripts se abren directamente en GitHub (enlaces de la sección anterior). Se puede
+      hacer scroll por <code>fase4_entrenar_baseline.py</code> y ver el TF-IDF, el LinearSVC y el cálculo de métricas
+      línea por línea. No requiere nada instalado.</p>
+    </div>
+    <div class="card">
+      <h3>Opción B — Re-ejecutar el pipeline</h3>
+      <p class="small">Requiere acceso credencializado a MIMIC-IV (ver abajo). Con la carpeta
+      <code>codigo/</code> clonada y el <code>discharge.csv.gz</code> en su ruta, se corre con los
+      comandos de arriba. El dataset y el modelo <b>no viajan en el repo</b> por el DUA — se regeneran localmente.</p>
+    </div>
+  </div>
+  <div class="banner">
+    <b>Nota de reproducibilidad honesta:</b> cualquiera puede <i>leer</i> el 100% del código, pero para
+    <i>volver a correrlo</i> se necesita la credencial de PhysioNet (curso CITI + firma del Data Use Agreement).
+    Es la misma barrera ética que protege los datos de pacientes; se explica en la ficha técnica de la presentación.
+  </div>
+
+  <h2>Enlaces de lo necesario</h2>
+  <ul class="linklist">
+    <li><a href="https://github.com/carlosperez100/PLN_SP">Repositorio GitHub completo</a>
+      <div class="d">Código, informe de resultados, LaTeX del proyecto y prototipo. Público.</div></li>
+    <li><a href="https://github.com/carlosperez100/PLN_SP/tree/main/codigo">Carpeta del pipeline (codigo)</a>
+      <div class="d">Los 7 scripts de Python listados arriba.</div></li>
+    <li><a href="https://github.com/carlosperez100/PLN_SP/blob/main/resultados/RESULTADOS_FASE4.md">Informe de resultados (RESULTADOS_FASE4.md)</a>
+      <div class="d">Todas las tablas de métricas, la validación cruzada y el análisis de sensibilidad.</div></li>
+    <li><a href="https://github.com/carlosperez100/PLN_SP/blob/main/resultados/fase4_limitaciones_DRAFT.md">Limitaciones y auditoría adversarial (26 hallazgos)</a>
+      <div class="d">Documento de honestidad metodológica: circularidad, fuga, métrica correcta.</div></li>
+    <li><a href="https://physionet.org/content/mimic-iv-note/2.2/">Dataset MIMIC-IV-Note v2.2 (PhysioNet)</a>
+      <div class="d">Fuente de las 331,793 epicrisis. Acceso credencializado (CITI + DUA).</div></li>
+    <li><a href="https://huggingface.co/emilyalsentzer/Bio_ClinicalBERT">Modelo Bio_ClinicalBERT (Hugging Face)</a>
+      <div class="d">Transformer clínico usado como tercer modelo del OE2.</div></li>
+    <li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html">scikit-learn — TfidfVectorizer</a>
+      <div class="d">Vectorización TF-IDF (palabra + char n-gramas).</div></li>
+    <li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.svm.LinearSVC.html">scikit-learn — LinearSVC</a>
+      <div class="d">El clasificador ganador.</div></li>
+  </ul>
+
+  <footer>
+    Carlos Pérez Pérez · Maestría en Inteligencia Artificial — UNI · Curso MIA-10 Procesamiento del Lenguaje Natural
+    (Dr. Wester Zela Moraya). Pipeline ejecutado el 04/07/2026. Código público en el repositorio
+    <a href="https://github.com/carlosperez100/PLN_SP">PLN_SP</a>.
+    El texto clínico y el modelo entrenado no se distribuyen por el Data Use Agreement de MIMIC-IV.
+  </footer>
+
+</div>
+</body>
+</html>

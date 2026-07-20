@@ -1,0 +1,55 @@
+# ==========================================================================
+# BLOQUEO DE DATOS SENSIBLES — MIMIC-IV Data Use Agreement (DUA)
+# Nunca versionar texto clínico ni modelos derivados del texto de pacientes.
+# ==========================================================================
+*.csv
+*.csv.gz
+*.tsv
+*.parquet
+*.feather
+*.db
+*.duckdb
+*.sqlite
+sample_*.csv
+
+# Modelos entrenados sobre texto MIMIC (vocabulario derivado = sensible)
+*.pkl
+*.joblib
+*.pt
+*.bin
+*.safetensors
+*.h5
+*.ckpt
+
+# Carpetas de datos/salidas
+data/
+datos/
+datos_intermedios/
+outputs/
+results_raw/
+mimic/
+MIMIC/
+note/
+
+# Jupyter
+.ipynb_checkpoints/
+*-checkpoint.ipynb
+Untitled*.ipynb
+
+# Python
+__pycache__/
+*.pyc
+venv/
+env/
+.venv/
+
+# Credenciales / entorno
+.env
+*.pem
+*.key
+
+# IDEs y SO
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
