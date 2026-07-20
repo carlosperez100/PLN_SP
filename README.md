@@ -8,6 +8,8 @@ Docente: Dr. Wester Zela Moraya · Autor: **Carlos Pérez Pérez**
 > explicación de la parte de procesamiento de lenguaje natural del proyecto
 > *Detección Automática de Eventos Adversos Hospitalarios en Epicrisis*.
 
+**🌐 Reporte en línea (sitio web): https://carlosperez100.github.io/PLN_SP/**
+
 ---
 
 ## 🎯 Qué hace este trabajo
