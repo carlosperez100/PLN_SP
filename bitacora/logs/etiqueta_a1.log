@@ -1,0 +1,35 @@
+[09:39:48] [+0:00:00] Cargando etiquetas A1 ...
+[09:39:48] [+0:00:00] A1: 18,989 notas · 14,005 pacientes
+[09:39:48] [+0:00:00] Recuperando el texto de discharge.csv.gz ...
+[09:40:24] [+0:00:36] Texto recuperado para 18,989/18,989 notas
+[09:40:25] [+0:00:37] Dataset guardado: 18,989 notas -> dataset_a1.parquet
+[09:40:25] [+0:00:37] Dataset: 18,989 notas · 14,005 pacientes
+[09:40:25] [+0:00:37] Multietiqueta: 15.1% de las notas
+[09:40:25] [+0:00:37] 
+[09:40:25] [+0:00:37] === Modelo principal: etiqueta A1, texto completo ===
+[09:51:18] [+0:11:30] A1 texto completo      F1-macro 0.526 [0.498–0.555] · F1-micro 0.769 · exact-match 0.634 · train 15,288 / test 3,701
+[09:51:19] [+0:11:30] 
+[09:51:19] [+0:11:30] === Escalabilidad: degradacion segun longitud del texto ===
+[09:51:19] [+0:11:30] (simula queja / reporte corto / evolucion frente a epicrisis)
+[09:51:26] [+0:11:38] truncado a 120 caracteres F1-macro 0.214 [0.204–0.221] · F1-micro 0.277 · exact-match 0.182 · train 15,288 / test 3,701
+[09:51:43] [+0:11:54] truncado a 500 caracteres F1-macro 0.420 [0.402–0.441] · F1-micro 0.666 · exact-match 0.511 · train 15,288 / test 3,701
+[09:52:40] [+0:12:51] truncado a 2000 caracteres F1-macro 0.433 [0.418–0.459] · F1-micro 0.703 · exact-match 0.570 · train 15,288 / test 3,701
+[12:25:51] [+2:46:03] truncado a completo    F1-macro 0.526 [0.498–0.555] · F1-micro 0.769 · exact-match 0.634 · train 15,288 / test 3,701
+
+==========================================================================
+OE2 CON ETIQUETA A1 (NO CIRCULAR) — RESULTADO
+==========================================================================
+Notas 18,989 · pacientes 14,005 · 6 naturalezas · split POR PACIENTE
+--------------------------------------------------------------------------
+  Etiqueta regex (circular)   F1-macro = 0.515
+  Etiqueta A1  (no circular)  F1-macro = 0.526  IC95 [0.498–0.555]
+  Delta                                = +0.011
+--------------------------------------------------------------------------
+Degradacion por longitud del texto (escalabilidad):
+  120 caracteres   F1-macro 0.213
+  500 caracteres   F1-macro 0.420
+  2000 caracteres  F1-macro 0.433
+  completo         F1-macro 0.526
+--------------------------------------------------------------------------
+Total 2:46:03 -> C:\MIMIC\tesis\04_pipeline_codigo\datos_intermedios\fase4_v2
+==========================================================================

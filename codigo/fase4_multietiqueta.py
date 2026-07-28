@@ -28,7 +28,7 @@ from sklearn.model_selection import GroupShuffleSplit
 from sklearn.metrics import (f1_score, hamming_loss, accuracy_score,
                              classification_report)
 
-BASE = Path(r"C:/MIMIC/tesis/04_pipeline_codigo/datos_intermedios")
+BASE = Path(r"T:/MIMIC/tesis/04_pipeline_codigo/datos_intermedios")
 CANDIDATOS = BASE / "corpus_fase3_candidatos.csv"
 PARQUET = BASE / "fase4" / "fase4_dataset.parquet"
 OUT = BASE / "fase4"

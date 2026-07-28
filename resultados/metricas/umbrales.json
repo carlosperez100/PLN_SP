@@ -1,0 +1,8 @@
+{
+  "Cuidado del paciente": -0.1,
+  "Dispositivo": -0.1,
+  "Infeccion nosocomial": -0.15,
+  "Medicacion": -0.3,
+  "Procedimiento": -0.3,
+  "Sistema/Organizacion": -0.5
+}

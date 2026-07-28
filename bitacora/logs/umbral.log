@@ -1,0 +1,36 @@
+[12:47:54] [+0:00:00] Cargando dataset A1 ...
+[12:47:55] [+0:00:00] 18,989 notas · 14,005 pacientes · 6 clases
+[12:47:55] [+0:00:00] train_fit 12,171 · val 3,117 · test 3,701 (sin pacientes compartidos)
+[12:47:55] [+0:00:00] Entrenando ...
+[12:56:19] [+0:08:25] BASE (umbral 0)        F1-macro 0.517
+[12:56:19] [+0:08:25] Calibrando umbrales sobre validacion ...
+[12:56:19] [+0:08:25]   Cuidado del paciente     umbral -0.10  (F1 en val 0.861)
+[12:56:19] [+0:08:25]   Dispositivo              umbral -0.10  (F1 en val 0.586)
+[12:56:19] [+0:08:25]   Infeccion nosocomial     umbral -0.15  (F1 en val 0.641)
+[12:56:19] [+0:08:25]   Medicacion               umbral -0.30  (F1 en val 0.473)
+[12:56:19] [+0:08:25]   Procedimiento            umbral -0.30  (F1 en val 0.800)
+[12:56:20] [+0:08:25]   Sistema/Organizacion     umbral -0.50  (F1 en val 0.175)
+[12:56:20] [+0:08:25] CALIBRADO              F1-macro 0.547  (delta +0.030)
+[12:56:20] [+0:08:25]   «.                                 » base=1 calibrado=2
+[12:56:20] [+0:08:25]   «                                  » base=0 calibrado=2
+[12:56:20] [+0:08:25]   «                                  » base=0 calibrado=2
+[12:56:20] [+0:08:25]   «ok                                » base=0 calibrado=2
+[12:56:20] [+0:08:25]   «Paciente estable, sin novedad.    » base=0 calibrado=1
+[12:56:20] [+0:08:25]   «Routine visit. No complaints. Cont» base=0 calibrado=0
+
+========================================================================
+UMBRAL CALIBRADO — ANTES Y DESPUES
+========================================================================
+F1-macro umbral fijo (0) : 0.517
+F1-macro calibrado       : 0.547   (+0.030)
+------------------------------------------------------------------------
+clase                     umbral  F1 antes  F1 desp  rec antes  rec desp
+Cuidado del paciente       -0.10     0.869    0.871      0.861     0.884
+Dispositivo                -0.10     0.592    0.592      0.564     0.613
+Infeccion nosocomial       -0.15     0.632    0.631      0.637     0.717
+Medicacion                 -0.30     0.217    0.286      0.125     0.200
+Procedimiento              -0.30     0.792    0.800      0.803     0.896
+Sistema/Organizacion       -0.50     0.000    0.103      0.000     0.106
+------------------------------------------------------------------------
+Total 0:08:26 -> C:\MIMIC\tesis\04_pipeline_codigo\datos_intermedios\fase4_v3
+========================================================================

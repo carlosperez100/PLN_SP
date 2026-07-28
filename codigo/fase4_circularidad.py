@@ -36,7 +36,7 @@ import ast
 def _cargar_tier_b():
     """Extrae el dict TIER_B_PATRONES del codigo fuente sin importar el modulo
     (evita la dependencia duckdb que este importa en su cabecera)."""
-    src = Path(r"C:/MIMIC/tesis/04_pipeline_codigo/fase3_corpus_expansion.py").read_text(encoding="utf-8")
+    src = Path(r"T:/MIMIC/tesis/04_pipeline_codigo/fase3_corpus_expansion.py").read_text(encoding="utf-8")
     arbol = ast.parse(src)
     for nodo in arbol.body:
         if isinstance(nodo, ast.Assign):
@@ -47,7 +47,7 @@ def _cargar_tier_b():
 
 TIER_B_PATRONES = _cargar_tier_b()
 
-BASE = Path(r"C:/MIMIC/tesis/04_pipeline_codigo/datos_intermedios")
+BASE = Path(r"T:/MIMIC/tesis/04_pipeline_codigo/datos_intermedios")
 CANDIDATOS = BASE / "corpus_fase3_candidatos.csv"
 PARQUET = BASE / "fase4" / "fase4_dataset.parquet"
 OUT = BASE / "fase4"

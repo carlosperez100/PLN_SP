@@ -1,0 +1,33 @@
+{
+  "generado": "2026-07-27T18:43:43",
+  "criterio_de_seleccion": "maximizar el VPP corregido por prevalencia sujeto a captar mas eventos que los 14,275 que EsSalud notifica hoy. La restriccion es necesaria: sin ella el optimo es un umbral muy alto con precision casi perfecta y utilidad nula.",
+  "prevalencia_usada": 0.0653,
+  "punto_actual_umbral_0": {
+    "umbral": -0.0,
+    "sensibilidad": 0.9068,
+    "especificidad": 0.9172,
+    "vpp_prevalencia_real": 0.4334,
+    "alertas_ano": 70429.0,
+    "alertas_dia": 193.0,
+    "eventos_captados_ano": 30526.0,
+    "falsas_alarmas_ano": 39903.0,
+    "veces_vs_notificacion_actual": 2.14
+  },
+  "punto_recomendado": {
+    "umbral": 1.1,
+    "sensibilidad": 0.434,
+    "especificidad": 0.9954,
+    "vpp_prevalencia_real": 0.8687,
+    "alertas_ano": 16818.0,
+    "alertas_dia": 46.0,
+    "eventos_captados_ano": 14609.0,
+    "falsas_alarmas_ano": 2209.0,
+    "veces_vs_notificacion_actual": 1.02
+  },
+  "mejora": {
+    "vpp": 0.4353,
+    "reduccion_falsas_alarmas_ano": 37694,
+    "coste_eventos_no_captados": 15917
+  },
+  "nota_sobre_el_suelo": "El VPP calculado es un SUELO, no el valor verdadero. Los falsos positivos se cuentan contra codigos CIE-10, y la premisa de esta tesis es que la codificacion administrativa subregistra los eventos adversos. Parte de esos falsos positivos pueden ser eventos reales nunca codificados. Cuantificarlo exige revision experta de una muestra de falsos positivos."
+}

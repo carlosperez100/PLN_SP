@@ -1,0 +1,24 @@
+% GENERADO por codigo/seleccion_modelos.py -- no editar a mano
+\begin{table}[htbp]
+\centering
+\caption{Matriz de decisi\'on ponderada para la selecci\'on del modelo de PLN.}
+\label{tab:seleccion-modelos}
+\begin{tabular}{@{}p{0.34\linewidth}cccc@{}}
+\toprule
+Criterio & Peso & M1 & M2 & M3 \\
+\midrule
+C1 -- Correspondencia con la tarea (clasificación multietiqueta) & 0.20 & 4 & 4 & 2 \\
+C2 -- Ajuste al dominio clínico & 0.10 & 2 & 2 & 4 \\
+C3 -- Transferibilidad al español (OE5) & 0.15 & 3 & 3 & 1 \\
+C4 -- Viabilidad de cómputo (CPU, $\leq$ 2.5 GB) & 0.15 & 4 & 4 & 2 \\
+C5 -- Cumplimiento del DUA (procesamiento 100 \% local) & 0.15 & 4 & 4 & 4 \\
+C6 -- Interpretabilidad / auditabilidad clínica & 0.10 & 4 & 4 & 2 \\
+C7 -- Desempeño empírico en el corpus (F1-macro, CV 5-fold) & 0.15 & 4 & 3 & 1 \\
+\midrule
+\textbf{Puntaje final} & 1.00 & \textbf{3.65} & \textbf{3.50} & \textbf{2.20} \\
+\bottomrule
+\end{tabular}
+\\[2pt]
+\footnotesize
+M1: TF-IDF (palabra+char) + LinearSVC; M2: TF-IDF + Regresión Logística; M3: Bio_ClinicalBERT congelado + LogReg. Escala 0--4.
+\end{table}

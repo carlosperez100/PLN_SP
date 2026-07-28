@@ -1,0 +1,63 @@
+{
+  "generado": "2026-07-27T17:39:37",
+  "experimento": "ablacion de la ventana del patron sobre el corpus completo",
+  "corpus": {
+    "epicrisis_objetivo": 331793,
+    "epicrisis_procesadas": 331793,
+    "cobertura_pct": 100.0
+  },
+  "tramos": {
+    "primero": {
+      "epicrisis": 260000,
+      "laxo": 203152,
+      "acotado": 73998,
+      "nota": "filas perdidas por el corte; solo sobreviven conteos"
+    },
+    "reanudado": {
+      "epicrisis": 71793,
+      "laxo": 55519,
+      "acotado": 19924,
+      "tier_a": 50,
+      "nota": "filas persistidas en parcial_*.csv"
+    }
+  },
+  "ablacion": {
+    "detecciones_laxo": 258671,
+    "detecciones_acotado": 93922,
+    "reduccion_absoluta": 164749,
+    "reduccion_pct": 63.7,
+    "negados_laxo": 30130,
+    "negados_acotado": 26613
+  },
+  "top_patrones_tramo_reanudado": {
+    "laxo": {
+      "hipoglicemia_insulina": 9382,
+      "infeccion_sitio_qx": 8376,
+      "anticoagulacion_excesiva": 6145,
+      "falla_dispositivo": 5263,
+      "infeccion_clostridium": 4337,
+      "bacteriemia": 3645,
+      "quemadura_paciente": 3433,
+      "infeccion_mrsa": 3299,
+      "neumonia_ventilador": 2187,
+      "complicacion_anestesia": 1242,
+      "hemorragia_postoperatoria": 1020,
+      "infeccion_cateter_central": 1011
+    },
+    "acotado": {
+      "infeccion_clostridium": 4337,
+      "bacteriemia": 3645,
+      "infeccion_mrsa": 3299,
+      "infeccion_sitio_qx": 2515,
+      "anticoagulacion_excesiva": 1016,
+      "ulcera_presion": 973,
+      "reaccion_adversa_medicamento": 698,
+      "neumonia_ventilador": 481,
+      "caida_paciente": 418,
+      "interaccion_medicamentosa": 381,
+      "fistula_postoperatoria": 364,
+      "perforacion_visceral": 299
+    }
+  },
+  "limitacion": "Los conteos cubren las 331,793 epicrisis y son validos (mismo codigo determinista sobre el mismo corpus). Las filas a nivel de nota solo existen para el tramo reanudado: las del primer tramo se perdieron al morir el proceso original, que acumulaba en memoria. Para un corpus de candidatos completo a nivel de fila habria que rehacer la corrida entera."
+}

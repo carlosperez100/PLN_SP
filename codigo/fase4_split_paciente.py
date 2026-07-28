@@ -36,7 +36,7 @@ from sklearn.model_selection import GroupShuffleSplit, train_test_split, Stratif
 from sklearn.metrics import (accuracy_score, f1_score, cohen_kappa_score,
                              classification_report, confusion_matrix)
 
-BASE = Path(r"C:/MIMIC/tesis/04_pipeline_codigo/datos_intermedios")
+BASE = Path(r"T:/MIMIC/tesis/04_pipeline_codigo/datos_intermedios")
 CANDIDATOS = BASE / "corpus_fase3_candidatos.csv"
 PARQUET = BASE / "fase4" / "fase4_dataset.parquet"
 OUT = BASE / "fase4"

@@ -35,9 +35,9 @@ from sklearn.metrics import (accuracy_score, f1_score, cohen_kappa_score,
                              classification_report, confusion_matrix)
 
 # ---- Rutas ----
-BASE = Path(r"C:/MIMIC/tesis/04_pipeline_codigo/datos_intermedios")
+BASE = Path(r"T:/MIMIC/tesis/04_pipeline_codigo/datos_intermedios")
 CANDIDATOS = BASE / "corpus_fase3_candidatos.csv"
-DISCHARGE = Path(r"C:/MIMIC/note/note/discharge.csv.gz")
+DISCHARGE = Path(r"T:/MIMIC/note/note/discharge.csv.gz")
 OUT = BASE / "fase4"
 OUT.mkdir(exist_ok=True)
 

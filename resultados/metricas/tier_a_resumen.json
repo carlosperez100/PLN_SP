@@ -1,0 +1,28 @@
+{
+  "generado": "2026-07-26T23:23:24",
+  "bug": {
+    "descripcion": "el mapeo usa codigos CON punto (A04.7) y MIMIC-IV los guarda SIN punto (A047)",
+    "hadm_metodo_original": 411,
+    "hadm_metodo_corregido": 109714,
+    "factor": 266.9
+  },
+  "corpus": {
+    "epicrisis_leidas": 331793,
+    "hospitalizaciones_totales": 545497
+  },
+  "estratos": {
+    "A1_causal_explicito": {
+      "notas": 18989,
+      "detecciones": 24400,
+      "naturalezas": 6,
+      "uso": "APTO como etiqueta: semantica causal, asignado por codificador humano, NO circular respecto del texto"
+    },
+    "A2_condiciones": {
+      "notas": 53375,
+      "detecciones": 87460,
+      "naturalezas": 7,
+      "uso": "NO apto como etiqueta positiva sin verificacion: puede ser motivo de ingreso y MIMIC-IV no trae bandera present-on-admission"
+    }
+  },
+  "archivo": "C:\\MIMIC\\tesis\\04_pipeline_codigo\\datos_intermedios\\fase3_v2\\candidatos_tier_a_corregido.csv"
+}

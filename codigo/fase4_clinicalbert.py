@@ -27,7 +27,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, f1_score, cohen_kappa_score
 
-BASE = Path(r"C:/MIMIC/tesis/04_pipeline_codigo/datos_intermedios/fase4")
+BASE = Path(r"T:/MIMIC/tesis/04_pipeline_codigo/datos_intermedios/fase4")
 DATASET = BASE / "fase4_dataset.parquet"
 MODELO = "emilyalsentzer/Bio_ClinicalBERT"
 N_SUB = 2500          # submuestra estratificada (CPU)

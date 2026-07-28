@@ -37,6 +37,99 @@ clínica (ver [`resultados/`](resultados/)).
 
 ---
 
+## 🔬 Ampliación del 27 de julio de 2026
+
+Una auditoría del pipeline encontró **cuatro defectos** en la construcción del
+corpus y los corrigió. El detalle completo, con el código, los comandos y la
+salida literal de consola, está en [`bitacora/`](bitacora/).
+
+### Los defectos y su efecto medido
+
+| Defecto | Efecto | Estado |
+|---|---|---|
+| Muestreo no declarado: solo se examinaba el **9%** del corpus | 301,793 epicrisis sin revisar | Corregido — 331,793 procesadas |
+| `re.DOTALL` hacía que `.*` cruzara la epicrisis entera | Detección del **48.8%** frente al ~9% de la literatura | Corregido — **−63.7%** de detecciones |
+| Los códigos CIE-10 del mapeo llevaban punto (`A04.7`) y MIMIC no (`A047`) | El Tier A operaba al **1.5%** de su capacidad | Corregido — **factor 267×** |
+| Ausencia de clase negativa en el entrenamiento | El sistema no podía abstenerse | Corregido — abstención 6/6 |
+
+### La firma del bug del comodín
+
+Al acotar la ventana del patrón, **solo cambian los patrones que contienen
+`.*`**; los demás quedan idénticos hasta la última detección. Eso demuestra que
+no era un problema de especificidad sino de **alcance del comodín**:
+
+```
+patrones con  .*  :  42,330  →   6,735   (−84.1%)
+patrones sin  .*  :  13,189  →  13,189   ( 0.0%)
+```
+
+### Etiqueta no circular
+
+El hallazgo metodológico central. Los códigos CIE-10 los asigna un codificador
+clínico humano leyendo la historia, de forma **independiente del texto** de la
+epicrisis. Reentrenando el mismo modelo sobre la misma fuente y cambiando solo
+la etiqueta:
+
+```
+Etiqueta regex (circular)     F1-macro = 0.515
+Etiqueta CIE-10 causal        F1-macro = 0.526   IC95 [0.498–0.555]
+```
+
+La comparación **no es pareja** (8 clases frente a 6) y el delta no es
+concluyente. Lo que sí puede afirmarse: *un modelo léxico recupera del texto,
+con F1-macro 0.526, una etiqueta que no proviene del texto*. Es evidencia de
+aprendizaje real, no de circularidad.
+
+### Escalabilidad entre géneros documentales
+
+¿Sirve el mismo modelo para una queja, un reporte de incidente o una evolución
+médica? Se midió truncando el texto:
+
+| Longitud | F1-macro |
+|---|---|
+| 120 caracteres *(mediana de un reporte de incidente)* | 0.213 |
+| 500 caracteres | 0.420 |
+| 2,000 caracteres *(≈512 tokens)* | 0.433 |
+| Completo *(~10,000)* | **0.526** |
+
+**No transfiere directamente**: pierde el 60% del F1 ante un texto breve. Y de
+paso: truncar a 512 tokens cuesta ~18% del F1-macro, lo que sustenta con
+medición propia la necesidad de segmentación por fragmentos.
+
+### Detector con capacidad de abstención
+
+Reformulado en dos etapas —¿hay evento? y ¿de qué naturaleza?— con 33,564
+epicrisis **sin** evento como clase negativa:
+
+| Métrica | Valor |
+|---|---|
+| Sensibilidad | 0.907 |
+| Especificidad | 0.917 |
+| AUC | **0.973** |
+| Precisión en el conjunto de prueba | 0.856 |
+| **Precisión a prevalencia real (6.53%)** | **0.433** |
+
+**La cifra que corresponde citar es 0.433, no 0.856.** El conjunto de prueba
+tiene 36% de positivos por construcción; la prevalencia real es 6.53%. Corregido
+por Bayes, de cada 100 alertas sobre el flujo real unas 43 serían correctas. Es
+el desempeño propio de una herramienta de **tamizaje**, cuya salida va a un
+revisor humano.
+
+La curva completa de puntos de operación está en
+[`resultados/metricas/curva_operacion.md`](resultados/metricas/curva_operacion.md).
+A prevalencia baja la especificidad domina: con sensibilidad perfecta el VPP
+solo subiría a 0.457, mientras que una especificidad de 0.977 lo lleva a 0.680.
+
+### Lo que no funcionó, y se conserva
+
+`fase4_v3_umbral_calibrado.py` documenta un **intento fallido**: calibrar
+umbrales mejoró el F1-macro (+0.030) pero **empeoró** los falsos positivos que
+pretendía corregir. El diagnóstico reveló un defecto de diseño más profundo —no
+existía clase negativa— que ningún umbral podía arreglar. Se conserva porque el
+fallo condujo al hallazgo.
+
+---
+
 ## 📂 Estructura
 
 ```
@@ -49,9 +142,15 @@ PLN_SP/
 │   ├── fase4_split_paciente.py        # Split por paciente (sin fuga)
 │   ├── fase4_circularidad.py          # Experimento de enmascaramiento
 │   └── fase4_multietiqueta.py         # Reformulación multi-etiqueta
+├── bitacora/          # Auditoría del 27-jul-2026: proceso, código y ejecución
+│   ├── BITACORA_CORPUS_Y_ETIQUETA_2026-07-27.md   # los 4 defectos y sus correcciones
+│   ├── ANEXO_CODIGO_Y_EJECUCION_2026-07-27.md     # código + comandos + salida real
+│   ├── TIER_C_REGLAS_VALIDACION_2026-07-27.md     # reglas con datos estructurados
+│   └── logs/                                       # registros de ejecución sin editar
 ├── resultados/        # Informe de métricas y auditoría (sin datos de pacientes)
 │   ├── RESULTADOS_FASE4.md
-│   └── fase4_limitaciones_DRAFT.md
+│   ├── fase4_limitaciones_DRAFT.md
+│   └── metricas/                                   # métricas en JSON + curva de operación
 ├── presentacion/      # Lámina de resultados
 │   └── slide_resultados_OE2_PLN.png
 └── docs/              # Explicación navegable (HTML)

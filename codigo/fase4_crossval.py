@@ -24,7 +24,7 @@ from sklearn.svm import LinearSVC
 from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import (accuracy_score, f1_score, cohen_kappa_score)
 
-BASE = Path(r"C:/MIMIC/tesis/04_pipeline_codigo/datos_intermedios/fase4")
+BASE = Path(r"T:/MIMIC/tesis/04_pipeline_codigo/datos_intermedios/fase4")
 DATASET = BASE / "fase4_dataset.parquet"
 N_SPLITS = 5
 SEED = 42

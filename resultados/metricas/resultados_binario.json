@@ -1,0 +1,62 @@
+{
+  "generado": "2026-07-27T18:24:36",
+  "experimento": "detector binario con clase negativa explicita",
+  "dataset": {
+    "total": 52553,
+    "positivos": 18989,
+    "negativos": 33564,
+    "razon_entrenamiento": "1:2",
+    "prevalencia_entrenamiento": 0.3613,
+    "prevalencia_real_A1": 0.0653
+  },
+  "metricas_conjunto_prueba": {
+    "sensibilidad": 0.9068,
+    "especificidad": 0.9172,
+    "precision": 0.8564,
+    "f1": 0.8809,
+    "auc": 0.9733,
+    "matriz": {
+      "vn": 6202,
+      "fp": 560,
+      "fn": 343,
+      "vp": 3339
+    }
+  },
+  "correccion_por_prevalencia": {
+    "vpp_en_prueba": 0.8564,
+    "vpp_a_prevalencia_real": 0.4334,
+    "lectura": "El conjunto de prueba tiene 33% de positivos por construccion, pero la prevalencia real del estrato A1 es 6.53%. El VPP corregido por Bayes es la cifra que corresponde citar al hablar de despliegue sobre el flujo real de epicrisis: de cada 100 alertas emitidas, solo esa fraccion seria correcta."
+  },
+  "prueba_abstencion": [
+    {
+      "texto": ".",
+      "margen": -1.711,
+      "detecta_evento": false
+    },
+    {
+      "texto": "   ",
+      "margen": -0.99,
+      "detecta_evento": false
+    },
+    {
+      "texto": "ok",
+      "margen": -0.668,
+      "detecta_evento": false
+    },
+    {
+      "texto": "Paciente estable, sin novedad.",
+      "margen": -0.841,
+      "detecta_evento": false
+    },
+    {
+      "texto": "Routine follow up visit. Vital signs stable. No acute distre",
+      "margen": -1.309,
+      "detecta_evento": false
+    },
+    {
+      "texto": "Patient admitted for elective knee replacement. Uneventful p",
+      "margen": -0.67,
+      "detecta_evento": false
+    }
+  ]
+}

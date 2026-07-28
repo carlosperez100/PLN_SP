@@ -1,0 +1,125 @@
+{
+  "generado": "2026-07-27T12:56:20",
+  "experimento": "umbral de decision calibrado por clase, sin fuga",
+  "particion": {
+    "train_fit": 12171,
+    "val": 3117,
+    "test": 3701,
+    "agrupado_por": "subject_id"
+  },
+  "f1_macro_umbral_fijo": 0.5172,
+  "f1_macro_calibrado": 0.5471,
+  "delta": 0.0299,
+  "umbrales": {
+    "Cuidado del paciente": -0.1,
+    "Dispositivo": -0.1,
+    "Infeccion nosocomial": -0.15,
+    "Medicacion": -0.3,
+    "Procedimiento": -0.3,
+    "Sistema/Organizacion": -0.5
+  },
+  "por_clase": {
+    "Cuidado del paciente": {
+      "f1_antes": 0.8688,
+      "f1_despues": 0.8711,
+      "recall_antes": 0.8613,
+      "recall_despues": 0.8839,
+      "precision_antes": 0.8763,
+      "precision_despues": 0.8587,
+      "n": 1464
+    },
+    "Dispositivo": {
+      "f1_antes": 0.5922,
+      "f1_despues": 0.5923,
+      "recall_antes": 0.564,
+      "recall_despues": 0.6126,
+      "precision_antes": 0.6235,
+      "precision_despues": 0.5734,
+      "n": 555
+    },
+    "Infeccion nosocomial": {
+      "f1_antes": 0.6325,
+      "f1_despues": 0.6312,
+      "recall_antes": 0.6374,
+      "recall_despues": 0.7165,
+      "precision_antes": 0.6277,
+      "precision_despues": 0.564,
+      "n": 455
+    },
+    "Medicacion": {
+      "f1_antes": 0.2174,
+      "f1_despues": 0.2857,
+      "recall_antes": 0.125,
+      "recall_despues": 0.2,
+      "precision_antes": 0.8333,
+      "precision_despues": 0.5,
+      "n": 40
+    },
+    "Procedimiento": {
+      "f1_antes": 0.7924,
+      "f1_despues": 0.7996,
+      "recall_antes": 0.8035,
+      "recall_despues": 0.8956,
+      "precision_antes": 0.7816,
+      "precision_despues": 0.7221,
+      "n": 1715
+    },
+    "Sistema/Organizacion": {
+      "f1_antes": 0.0,
+      "f1_despues": 0.1029,
+      "recall_antes": 0.0,
+      "recall_despues": 0.1061,
+      "precision_antes": 0.0,
+      "precision_despues": 0.1,
+      "n": 66
+    }
+  },
+  "rechazo_textos_triviales": [
+    {
+      "texto": ".",
+      "umbral_0": [
+        "Cuidado del paciente"
+      ],
+      "calibrado": [
+        "Cuidado del paciente",
+        "Procedimiento"
+      ]
+    },
+    {
+      "texto": "",
+      "umbral_0": [],
+      "calibrado": [
+        "Cuidado del paciente",
+        "Procedimiento"
+      ]
+    },
+    {
+      "texto": "   ",
+      "umbral_0": [],
+      "calibrado": [
+        "Cuidado del paciente",
+        "Procedimiento"
+      ]
+    },
+    {
+      "texto": "ok",
+      "umbral_0": [],
+      "calibrado": [
+        "Cuidado del paciente",
+        "Procedimiento"
+      ]
+    },
+    {
+      "texto": "Paciente estable, sin novedad.",
+      "umbral_0": [],
+      "calibrado": [
+        "Procedimiento"
+      ]
+    },
+    {
+      "texto": "Routine visit. No complaints. Continue medicatio",
+      "umbral_0": [],
+      "calibrado": []
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+[23:00:34] [+0:00:00] Mapeo: 223 codigos unicos — A1 causal 73 · A2 condiciones 150
+[23:00:34] [+0:00:00] Indexando diagnoses_icd.csv.gz por prefijo ...
+[23:23:06] [+0:22:31] 6,364,488 diagnosticos · 545,497 hospitalizaciones
+[23:23:06] [+0:22:31] metodo ORIGINAL (con punto): 411 hospitalizaciones
+[23:23:06] [+0:22:31] metodo CORREGIDO (prefijo) : 109,714 hospitalizaciones
+[23:23:06] [+0:22:31] Recorriendo epicrisis (solo columnas de id, sin texto) ...
+
+========================================================================
+TIER A CORREGIDO — antes y despues
+========================================================================
+Hospitalizaciones, metodo original  :      411
+Hospitalizaciones, metodo corregido :  109,714   (266.9x)
+------------------------------------------------------------------------
+A1 causal explicito :  18,989 notas  (24,400 detecciones, 6 naturalezas)
+A2 condiciones      :  53,375 notas  (87,460 detecciones, 7 naturalezas)
+------------------------------------------------------------------------
+Total 0:22:50 -> C:\MIMIC\tesis\04_pipeline_codigo\datos_intermedios\fase3_v2\candidatos_tier_a_corregido.csv
+========================================================================
+
+A1 — top naturalezas:
+naturaleza
+Procedimiento           8667
+Cuidado del paciente    7550
+Dispositivo             2994
+Infeccion nosocomial    2417
+Sistema/Organizacion     288
+Medicacion               209

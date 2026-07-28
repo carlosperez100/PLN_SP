@@ -1,0 +1,12 @@
+[22:51:20] [+0:00:00] [INFO ] Tier A: 223 codigos ICD-10 en el mapeo
+[22:51:20] [+0:00:00] [INFO ] Indexando diagnoses_icd.csv.gz (sin LIMIT) ...
+[22:51:22] [+0:00:02] [INFO ] Tier A: 6,364,488 diagnosticos leidos -> 411 hospitalizaciones con codigo de evento adverso
+[22:51:22] [+0:00:02] [INFO ] Recorriendo las 331,793 epicrisis en bloques de 20,000 ...
+[22:51:22] [+0:00:02] [INFO ] (una sola lectura del .gz alimenta las DOS variantes)
+[23:21:59] [+0:30:39] [INFO ] bloque   0 |  20,000/331,793 (  6.0%) | laxo  15,443 | acotado   5,405 | ETA 7:57:52
+[23:40:18] [+0:48:58] [INFO ] bloque   2 |  60,000/331,793 ( 18.1%) | laxo  47,175 | acotado  16,915 | ETA 3:41:51
+[09:21:07] [+10:29:46] [INFO ] bloque   4 | 100,000/331,793 ( 30.1%) | laxo  78,642 | acotado  28,520 | ETA 1 day, 0:19:47
+[09:40:00] [+10:48:40] [INFO ] bloque   6 | 140,000/331,793 ( 42.2%) | laxo 110,053 | acotado  40,150 | ETA 14:48:38
+[12:23:38] [+13:32:18] [INFO ] bloque   8 | 180,000/331,793 ( 54.3%) | laxo 141,069 | acotado  51,431 | ETA 11:25:00
+[12:46:31] [+13:55:10] [INFO ] bloque  10 | 220,000/331,793 ( 66.3%) | laxo 172,151 | acotado  62,653 | ETA 7:04:23
+[16:14:41] [+17:23:21] [INFO ] bloque  12 | 260,000/331,793 ( 78.4%) | laxo 203,152 | acotado  73,998 | ETA 4:48:05

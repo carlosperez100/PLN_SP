@@ -1,0 +1,38 @@
+[18:05:20] [+0:00:00] Cargando positivos (A1) ...
+[18:05:21] [+0:00:00] Positivos: 18,989
+[18:05:21] [+0:00:00] Identificando hospitalizaciones SIN ningun codigo del mapeo ...
+[18:05:21] [+0:00:00]   hospitalizaciones con algun codigo: 59,231
+[18:05:21] [+0:00:00] Muestreando 37,978 epicrisis negativas del .gz ...
+[18:05:56] [+0:00:35] Negativos: 37,978
+[18:05:56] [+0:00:35]   descartados 4,414 negativos de pacientes que ya son positivos
+[18:05:59] [+0:00:38] Dataset binario: 52,553 notas (36.1% positivas)
+[18:05:59] [+0:00:38] train 42,109 · test 10,444 (sin pacientes compartidos)
+[18:05:59] [+0:00:38] Entrenando detector binario ...
+[18:24:35] [+0:19:14] Sensibilidad 0.907 · Especificidad 0.917 · Precision 0.856 · F1 0.881 · AUC 0.973
+[18:24:35] [+0:19:14] VPP corregido a prevalencia real (6.53%): 0.433
+[18:24:35] [+0:19:14] 
+[18:24:35] [+0:19:14] Prueba de abstencion ante textos triviales:
+[18:24:35] [+0:19:14]   «.                                             » margen -1.71 -> se abstiene
+[18:24:35] [+0:19:14]   «                                              » margen -0.99 -> se abstiene
+[18:24:35] [+0:19:14]   «ok                                            » margen -0.67 -> se abstiene
+[18:24:35] [+0:19:14]   «Paciente estable, sin novedad.                » margen -0.84 -> se abstiene
+[18:24:35] [+0:19:14]   «Routine follow up visit. Vital signs stable. N» margen -1.31 -> se abstiene
+[18:24:35] [+0:19:14]   «Patient admitted for elective knee replacement» margen -0.67 -> se abstiene
+
+==========================================================================
+DETECTOR BINARIO CON CLASE NEGATIVA — RESULTADO
+==========================================================================
+Dataset: 52,553 epicrisis (18,989 con evento · 33,564 sin evento)
+--------------------------------------------------------------------------
+  Sensibilidad (recall)          : 0.907
+  Especificidad                  : 0.917
+  Precision en el conjunto prueba: 0.856
+  F1                             : 0.881
+  AUC                            : 0.973
+--------------------------------------------------------------------------
+  VPP a prevalencia real (6.53%)  : 0.433   <- cifra de despliegue
+--------------------------------------------------------------------------
+Abstencion ante textos triviales: 6/6
+
+Total 0:19:15 -> T:\MIMIC\tesis\04_pipeline_codigo\datos_intermedios\fase4_v4
+==========================================================================

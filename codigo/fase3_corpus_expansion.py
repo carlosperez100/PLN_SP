@@ -32,12 +32,12 @@ import pandas as pd
 # =============================================================================
 # CONFIGURACIÓN
 # =============================================================================
-PATH_DISCHARGE = Path(r"C:\MIMIC\note\note\discharge.csv.gz")
-PATH_DIAGNOSES = Path(r"C:\MIMIC\mimiciv\hosp\diagnoses_icd.csv.gz")
-PATH_ADMISSIONS= Path(r"C:\MIMIC\mimiciv\hosp\admissions.csv.gz")
-PATH_PHARMACY  = Path(r"C:\MIMIC\mimiciv\hosp\pharmacy.csv.gz")
-PATH_MAPPING   = Path(r"C:\MIMIC\tesis\04_pipeline_codigo\eventos_adversos_icd10_v2.csv")
-PATH_SALIDAS   = Path(r"C:\MIMIC\tesis\04_pipeline_codigo\datos_intermedios")
+PATH_DISCHARGE = Path(r"T:\MIMIC\note\note\discharge.csv.gz")
+PATH_DIAGNOSES = Path(r"T:\MIMIC\mimiciv\hosp\diagnoses_icd.csv.gz")
+PATH_ADMISSIONS= Path(r"T:\MIMIC\mimiciv\hosp\admissions.csv.gz")
+PATH_PHARMACY  = Path(r"T:\MIMIC\mimiciv\hosp\pharmacy.csv.gz")
+PATH_MAPPING   = Path(r"T:\MIMIC\tesis\04_pipeline_codigo\eventos_adversos_icd10_v2.csv")
+PATH_SALIDAS   = Path(r"T:\MIMIC\tesis\04_pipeline_codigo\datos_intermedios")
 
 SEMILLA        = 42
 MUESTRA_TARGET = 350   # notas para la muestra estratificada (>300)

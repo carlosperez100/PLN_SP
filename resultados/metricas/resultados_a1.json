@@ -1,0 +1,116 @@
+{
+  "generado": "2026-07-27T12:25:52",
+  "experimento": "OE2 con etiqueta A1 no circular (ICD-10 causal)",
+  "dataset": {
+    "notas": 18989,
+    "pacientes": 14005,
+    "multietiqueta_pct": 15.1,
+    "clases": [
+      "Cuidado del paciente",
+      "Dispositivo",
+      "Infeccion nosocomial",
+      "Medicacion",
+      "Procedimiento",
+      "Sistema/Organizacion"
+    ]
+  },
+  "modelo_principal": {
+    "f1_macro": 0.5256,
+    "f1_macro_ic95": [
+      0.4979,
+      0.5551
+    ],
+    "f1_micro": 0.7692,
+    "exact_match": 0.6344,
+    "n_train": 15288,
+    "n_test": 3701,
+    "clases": [
+      "Cuidado del paciente",
+      "Dispositivo",
+      "Infeccion nosocomial",
+      "Medicacion",
+      "Procedimiento",
+      "Sistema/Organizacion"
+    ]
+  },
+  "por_clase": {
+    "Cuidado del paciente": {
+      "precision": 0.8826423049894588,
+      "recall": 0.8579234972677595,
+      "f1-score": 0.8701073779009352,
+      "support": 1464.0
+    },
+    "Dispositivo": {
+      "precision": 0.6264822134387352,
+      "recall": 0.5711711711711712,
+      "f1-score": 0.5975494816211122,
+      "support": 555.0
+    },
+    "Infeccion nosocomial": {
+      "precision": 0.6179540709812108,
+      "recall": 0.6505494505494506,
+      "f1-score": 0.6338329764453962,
+      "support": 455.0
+    },
+    "Medicacion": {
+      "precision": 0.8571428571428571,
+      "recall": 0.15,
+      "f1-score": 0.2553191489361702,
+      "support": 40.0
+    },
+    "Procedimiento": {
+      "precision": 0.7835400225479143,
+      "recall": 0.8104956268221575,
+      "f1-score": 0.7967899111493264,
+      "support": 1715.0
+    },
+    "Sistema/Organizacion": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 66.0
+    }
+  },
+  "comparacion_con_etiqueta_regex": {
+    "f1_macro_regex_circular": 0.515,
+    "accuracy_regex_circular": 0.731,
+    "f1_macro_a1_no_circular": 0.5256,
+    "delta_f1_macro": 0.0106,
+    "lectura": "La diferencia estima cuanto del rendimiento anterior dependia de que la etiqueta viniera del mismo regex aplicado al texto. Una caida grande NO invalida el trabajo: cuantifica la circularidad, que es lo que la auditoria pedia medir."
+  },
+  "escalabilidad_por_longitud": [
+    {
+      "longitud": "120 caracteres",
+      "caracteres": 120,
+      "f1_macro": 0.2135,
+      "f1_macro_lo": 0.2043,
+      "f1_macro_hi": 0.2215,
+      "f1_micro": 0.2772
+    },
+    {
+      "longitud": "500 caracteres",
+      "caracteres": 500,
+      "f1_macro": 0.4203,
+      "f1_macro_lo": 0.4016,
+      "f1_macro_hi": 0.4411,
+      "f1_micro": 0.6657
+    },
+    {
+      "longitud": "2000 caracteres",
+      "caracteres": 2000,
+      "f1_macro": 0.4333,
+      "f1_macro_lo": 0.4177,
+      "f1_macro_hi": 0.4586,
+      "f1_micro": 0.7033
+    },
+    {
+      "longitud": "completo",
+      "caracteres": -1,
+      "f1_macro": 0.5256,
+      "f1_macro_lo": 0.4979,
+      "f1_macro_hi": 0.5551,
+      "f1_micro": 0.7692
+    }
+  ],
+  "nota_escalabilidad": "El detector se entrena sobre epicrisis largas. La curva por longitud estima su comportamiento ante textos cortos (quejas, reportes de incidente, evoluciones). Es el sustento empirico de que el pipeline admite otros generos documentales."
+}

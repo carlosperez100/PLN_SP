@@ -1,0 +1,26 @@
+[17:07:11] [+0:00:00] Checkpoint: 260,000 epicrisis ya procesadas (78.4%)
+[17:07:11] [+0:00:00] Conteos previos — laxo 203,152 · acotado 73,998
+[17:07:11] [+0:00:00] Faltan 71,793 epicrisis
+[17:07:11] [+0:00:00] [INFO ] Tier A: 223 codigos ICD-10 en el mapeo
+[17:07:11] [+0:00:00] [INFO ] Indexando diagnoses_icd.csv.gz (sin LIMIT) ...
+[17:07:13] [+0:00:01] [INFO ] Tier A: 6,364,488 diagnosticos leidos -> 411 hospitalizaciones con codigo de evento adverso
+[17:07:13] [+0:00:01] Saltando los primeros 260,000 registros del .gz ...
+[17:07:20] [+0:00:09]   saltadas 80,000/260,000
+[17:07:28] [+0:00:16]   saltadas 160,000/260,000
+[17:07:35] [+0:00:24]   saltadas 240,000/260,000
+[17:16:14] [+0:09:03] 280,000/331,793 ( 84.4%) | nuevas: laxo 16,316 · acotado  6,049 | ETA 0:23:28
+[17:25:14] [+0:18:03] 300,000/331,793 ( 90.4%) | nuevas: laxo 31,227 · acotado 11,321 | ETA 0:14:21
+[17:34:21] [+0:27:10] 320,000/331,793 ( 96.4%) | nuevas: laxo 46,523 · acotado 16,740 | ETA 0:05:20
+[17:39:37] [+0:32:26] 331,793/331,793 (100.0%) | nuevas: laxo 55,519 · acotado 19,924 | ETA 0:00:00
+
+========================================================================
+ABLACION DE LA VENTANA DEL PATRON — RESULTADO SOBRE EL CORPUS COMPLETO
+========================================================================
+Epicrisis procesadas : 331,793 de 331,793 (100.0%)
+------------------------------------------------------------------------
+  Variante LAXA (re.DOTALL, original) :  258,671 detecciones
+  Variante ACOTADA (ventana 100 car.) :   93,922 detecciones
+  Reduccion al acotar                 :  164,749 (63.7%)
+------------------------------------------------------------------------
+Total 0:32:26 -> C:\MIMIC\tesis\04_pipeline_codigo\datos_intermedios\fase3_v2
+========================================================================
