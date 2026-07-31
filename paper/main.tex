@@ -356,6 +356,7 @@ del coeficiente en escenarios desbalanceados \cite{feinstein}.
 
 \section{Resultados}
 \subsection{Detección binaria}
+\label{sec:deteccion}
 Vectorización TF-IDF (palabra y carácter) con LinearSVC balanceado. Los
 intervalos se calculan por \textbf{bootstrap agrupado por paciente}: remuestrear
 notas sueltas viola la independencia, porque un mismo paciente aporta varias
@@ -382,7 +383,11 @@ El conjunto de prueba está balanceado, por lo que su VPP bruto (0.793)
 sobreestima el operativo. Se reporta el VPP reajustado a la prevalencia
 poblacional, que es la cifra con la que trabajaría un servicio de calidad.
 Ante seis textos triviales o sin contenido clínico el detector se abstuvo en
-6 de 6 casos.
+6 de 6 casos. La Figura~
+ef{fig:roc} muestra la curva ROC con el
+punto de operación empleado y la Figura~
+ef{fig:confusion} el reparto de
+aciertos y errores.
 
 \begin{figure}[htbp]
 \centering
@@ -484,18 +489,23 @@ Restringiendo la comparación a los modelos que ven la misma cantidad de texto
 y emplean ponderación de clases, Bio\_ClinicalBERT ajustado alcanza F1-macro
 0.354 frente a 0.330 del modelo léxico truncado. La
 ponderación resulta decisiva para el transformer: sin ella su F1-macro cae a
-0.249, una diferencia del 42% atribuible únicamente
+0.249, una diferencia del 42\% atribuible únicamente
 al tratamiento del desbalance. La conclusión de que «el modelo simple gana»
 era, en esa parte, un artefacto del protocolo.
 
 \subsubsection{La ventana de contexto sí explica la diferencia real}
 \label{sec:ventana}
-La arquitectura BERT \cite{bert}, \cite{vaswani} limita la entrada a 512
-\emph{tokens}. Las epicrisis de este corpus tienen una mediana de
-3,148 \emph{tokens}, de modo que el transformer accede
-únicamente al 9.0\% del documento, mientras que TF-IDF lo
-procesa íntegro. Atribuir la diferencia a la arquitectura sin controlar esa
-asimetría sería un error de interpretación.
+La arquitectura BERT \cite{bert}, \cite{vaswani} limita la entrada a un
+número fijo de \emph{tokens} ---512 en su configuración estándar---. Por
+restricciones de memoria de la GPU disponible, este experimento se ejecutó con
+una ventana de 256 \emph{tokens}. Dado que las
+epicrisis del corpus tienen una mediana de 3,148
+\emph{tokens}, el transformer accede únicamente al
+9.0\% del documento, mientras que TF-IDF lo procesa
+íntegro. Atribuir la diferencia a la arquitectura sin controlar esa asimetría
+sería un error de interpretación. Con la ventana estándar de 512 la cobertura
+seguiría siendo minoritaria (en torno al 16\,\%), de modo que la conclusión no
+depende de esta restricción.
 
 Para separar ambos efectos se entrenó el modelo léxico sobre el texto
 \textbf{truncado a la misma ventana}. Su F1-macro cae de
@@ -513,7 +523,9 @@ datos; lo único que cambia es cuánto texto procesa el modelo.}
 \label{fig:ventana}
 \end{figure}
 
-Este resultado concuerda con la literatura sobre documentos clínicos largos:
+El efecto se representa en la Figura~
+ef{fig:ventana}. Concuerda con la
+literatura sobre documentos clínicos largos:
 Beltagy \emph{et al.} \cite{longformer} y Zaheer \emph{et al.}
 \cite{bigbird} propusieron mecanismos de atención dispersa precisamente para
 superar ese límite, y Li \emph{et al.} \cite{cliniclong} mostraron que
@@ -549,10 +561,12 @@ Lo que sí puede establecerse es la posición cualitativa del enfoque:
 \item Murff \emph{et al.} \cite{murff} reportan que el procesamiento de
 lenguaje natural sobre notas clínicas alcanza una \textbf{sensibilidad
 superior y una especificidad inferior} a la de los indicadores de seguridad
-del paciente derivados de la codificación al alta. El presente trabajo
-reproduce ese perfil: la sensibilidad (0.762) supera a la
-especificidad (0.770) en el punto de operación elegido, lo
-que es coherente con priorizar la no omisión de eventos.
+del paciente derivados de la codificación al alta. El presente trabajo comparte
+ese régimen de funcionamiento: sensibilidad y especificidad quedan
+equilibradas (0.762 y 0.770) y muy por
+encima de lo que la codificación administrativa alcanza por sí sola, aunque el
+punto de operación no se optimizó ---se mantuvo el umbral por defecto del
+clasificador---.
 \item Classen \emph{et al.} \cite{classen} establecieron que los métodos
 basados en notificación voluntaria detectan del orden de \textbf{una décima
 parte} de los eventos que identifica una revisión sistemática. Ese es el
@@ -754,7 +768,9 @@ menor F1 son también las de menor soporte.}
 \end{figure}
 
 \subsection{Discusión}
-Las clases con peor desempeño son \emph{Comportamiento} (F1 0.542),
+El desglose completo se representa en la Figura~
+ef{fig:ersp}. Las clases
+con peor desempeño son \emph{Comportamiento} (F1 0.542),
 \emph{Procedimiento} (0.595) e \emph{Insumos} (0.679), las tres con menos de 60
 casos de prueba: el limitante es el número de ejemplos, no el método.
 

@@ -40,6 +40,12 @@ kap = leer("fase6_concordancia/concordancia.json")
 oe5 = leer("oe5_ersp/informe_oe5.json")
 f11 = leer("fase11/resultados_transformers.json")   # fine-tuning en GPU
 
+# `v` (ventana de contexto) se usa tambien en Conclusiones, fuera del bloque
+# que depende de f11: definirla solo alli hacia que el script muriera con
+# NameError si el artefacto faltaba, tras haber escrito ya el .md
+v = (f11 or {}).get("ventana", {"cobertura_media": float("nan"),
+                                "tokens_mediana": 0})
+
 e1 = f9["etapa1_deteccion"]
 cor = f9["corpus"]
 ic = f10["A_intervalos"]
@@ -397,9 +403,6 @@ if oe5:
 # --- sección de transformers: usa el fine-tuning si ya está disponible ------
 if f11 and f11.get("resultados"):
     R = {k: v for k, v in f11["resultados"].items() if "error" not in v}
-    # `ventana` puede faltar si el JSON lo escribió un script parcial
-    v = f11.get("ventana", {"cobertura_media": float("nan"),
-                            "tokens_mediana": 0})
 
     # Las claves se localizan por CONTENIDO y no por cadena literal: los
     # nombres cambiaron al añadir las variantes sin balanceo y el truncado
@@ -488,18 +491,23 @@ Restringiendo la comparación a los modelos que ven la misma cantidad de texto
 y emplean ponderación de clases, Bio\_ClinicalBERT ajustado alcanza F1-macro
 {f1_bert_pond:.3f} frente a {f1_tfidf_trunc:.3f} del modelo léxico truncado. La
 ponderación resulta decisiva para el transformer: sin ella su F1-macro cae a
-{f1_bert_sin:.3f}, una diferencia del {mejora_pond:.0%} atribuible únicamente
+{f1_bert_sin:.3f}, una diferencia del {pct(mejora_pond, 0)} atribuible únicamente
 al tratamiento del desbalance. La conclusión de que «el modelo simple gana»
 era, en esa parte, un artefacto del protocolo.
 
 \subsubsection{{La ventana de contexto sí explica la diferencia real}}
 \label{{sec:ventana}}
-La arquitectura BERT \cite{{bert}}, \cite{{vaswani}} limita la entrada a 512
-\emph{{tokens}}. Las epicrisis de este corpus tienen una mediana de
-{v['tokens_mediana']:,} \emph{{tokens}}, de modo que el transformer accede
-únicamente al {pct(v['cobertura_media'])} del documento, mientras que TF-IDF lo
-procesa íntegro. Atribuir la diferencia a la arquitectura sin controlar esa
-asimetría sería un error de interpretación.
+La arquitectura BERT \cite{{bert}}, \cite{{vaswani}} limita la entrada a un
+número fijo de \emph{{tokens}} ---512 en su configuración estándar---. Por
+restricciones de memoria de la GPU disponible, este experimento se ejecutó con
+una ventana de {f11['config']['max_len']} \emph{{tokens}}. Dado que las
+epicrisis del corpus tienen una mediana de {v['tokens_mediana']:,}
+\emph{{tokens}}, el transformer accede únicamente al
+{pct(v['cobertura_media'])} del documento, mientras que TF-IDF lo procesa
+íntegro. Atribuir la diferencia a la arquitectura sin controlar esa asimetría
+sería un error de interpretación. Con la ventana estándar de 512 la cobertura
+seguiría siendo minoritaria (en torno al 16\,\%), de modo que la conclusión no
+depende de esta restricción.
 
 Para separar ambos efectos se entrenó el modelo léxico sobre el texto
 \textbf{{truncado a la misma ventana}}. Su F1-macro cae de
@@ -517,7 +525,8 @@ datos; lo único que cambia es cuánto texto procesa el modelo.}}
 \label{{fig:ventana}}
 \end{{figure}}
 
-Este resultado concuerda con la literatura sobre documentos clínicos largos:
+El efecto se representa en la Figura~ef{{fig:ventana}}. Concuerda con la
+literatura sobre documentos clínicos largos:
 Beltagy \emph{{et al.}} \cite{{longformer}} y Zaheer \emph{{et al.}}
 \cite{{bigbird}} propusieron mecanismos de atención dispersa precisamente para
 superar ese límite, y Li \emph{{et al.}} \cite{{cliniclong}} mostraron que
@@ -917,6 +926,7 @@ del coeficiente en escenarios desbalanceados \cite{{feinstein}}.
 
 \section{{Resultados}}
 \subsection{{Detección binaria}}
+\label{{sec:deteccion}}
 Vectorización TF-IDF (palabra y carácter) con LinearSVC balanceado. Los
 intervalos se calculan por \textbf{{bootstrap agrupado por paciente}}: remuestrear
 notas sueltas viola la independencia, porque un mismo paciente aporta varias
@@ -943,7 +953,9 @@ El conjunto de prueba está balanceado, por lo que su VPP bruto (0.793)
 sobreestima el operativo. Se reporta el VPP reajustado a la prevalencia
 poblacional, que es la cifra con la que trabajaría un servicio de calidad.
 Ante seis textos triviales o sin contenido clínico el detector se abstuvo en
-{n_abs} de 6 casos.
+{n_abs} de 6 casos. La Figura~ef{{fig:roc}} muestra la curva ROC con el
+punto de operación empleado y la Figura~ef{{fig:confusion}} el reparto de
+aciertos y errores.
 
 \begin{{figure}}[htbp]
 \centering
@@ -1011,10 +1023,12 @@ Lo que sí puede establecerse es la posición cualitativa del enfoque:
 \item Murff \emph{{et al.}} \cite{{murff}} reportan que el procesamiento de
 lenguaje natural sobre notas clínicas alcanza una \textbf{{sensibilidad
 superior y una especificidad inferior}} a la de los indicadores de seguridad
-del paciente derivados de la codificación al alta. El presente trabajo
-reproduce ese perfil: la sensibilidad ({e1['sensibilidad']:.3f}) supera a la
-especificidad ({e1['especificidad']:.3f}) en el punto de operación elegido, lo
-que es coherente con priorizar la no omisión de eventos.
+del paciente derivados de la codificación al alta. El presente trabajo comparte
+ese régimen de funcionamiento: sensibilidad y especificidad quedan
+equilibradas ({e1['sensibilidad']:.3f} y {e1['especificidad']:.3f}) y muy por
+encima de lo que la codificación administrativa alcanza por sí sola, aunque el
+punto de operación no se optimizó ---se mantuvo el umbral por defecto del
+clasificador---.
 \item Classen \emph{{et al.}} \cite{{classen}} establecieron que los métodos
 basados en notificación voluntaria detectan del orden de \textbf{{una décima
 parte}} de los eventos que identifica una revisión sistemática. Ese es el
@@ -1203,7 +1217,8 @@ menor F1 son también las de menor soporte.}}
 \end{{figure}}
 
 \subsection{{Discusión}}
-Las clases con peor desempeño son \emph{{Comportamiento}} (F1 0.542),
+El desglose completo se representa en la Figura~ef{{fig:ersp}}. Las clases
+con peor desempeño son \emph{{Comportamiento}} (F1 0.542),
 \emph{{Procedimiento}} (0.595) e \emph{{Insumos}} (0.679), las tres con menos de 60
 casos de prueba: el limitante es el número de ejemplos, no el método.
 

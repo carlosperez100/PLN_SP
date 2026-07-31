@@ -142,8 +142,10 @@ if f11.exists():
     trunc = (buscar("TF-IDF", "sin balanceo", "truncado")
              or buscar("TF-IDF", "truncado"))
     if not (completo and trunc):
-        raise SystemExit("[!] no se hallaron las variantes completo/truncado "
-                         f"en fase11. Claves disponibles: {list(R)}")
+        # Avisar sin abortar: un SystemExit aqui dejaba sin generar la fig4,
+        # que no depende de estos datos.
+        print(f"  [!] fig3 omitida: faltan las variantes completo/truncado en "
+              f"fase11. Claves: {list(R)}")
     if completo and trunc:
         met = ["exactitud", "f1_macro", "kappa"]
         etiq = ["Exactitud", "F1-macro", "Kappa"]
@@ -153,7 +155,8 @@ if f11.exists():
         b1 = ax.bar(x - 0.19, [completo[m] for m in met], 0.34,
                     label="Texto completo", color=VERDE, zorder=3)
         b2 = ax.bar(x + 0.19, [trunc[m] for m in met], 0.34,
-                    label="Truncado a 512 tokens", color=ORO, zorder=3)
+                    label="Truncado a la ventana del transformer",
+                    color=ORO, zorder=3)
         for barras in (b1, b2):
             ax.bar_label(barras, fmt="%.3f", fontsize=6.5, padding=2,
                          color=TINTA)
