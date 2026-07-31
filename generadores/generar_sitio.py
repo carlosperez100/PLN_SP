@@ -108,6 +108,13 @@ tr.mejor td {{ background:color-mix(in srgb,var(--verde) 12%,transparent); }}
 code {{ background:var(--tarjeta); border:1px solid var(--linea);
   border-radius:4px; padding:.1rem .35rem; font-size:.86rem; }}
 a {{ color:var(--verde); }}
+.descargas {{ display:flex; flex-wrap:wrap; gap:.6rem; margin:1.4rem 0; }}
+.boton {{ display:inline-block; background:var(--verde); color:#fff;
+  text-decoration:none; font-weight:600; font-size:.9rem;
+  padding:.6rem 1.1rem; border-radius:7px; }}
+.boton:hover {{ filter:brightness(1.08); }}
+.boton.sec {{ background:transparent; color:var(--verde);
+  border:1.5px solid var(--verde); }}
 footer {{ margin-top:3rem; padding-top:1rem; border-top:1px solid var(--linea);
   color:var(--suave); font-size:.84rem; }}
 </style></head><body><main>
@@ -117,6 +124,15 @@ footer {{ margin-top:3rem; padding-top:1rem; border-top:1px solid var(--linea);
 <p class="sub">Trabajo final · MIA-10 Procesamiento del Lenguaje Natural ·
 Maestría en Inteligencia Artificial, Universidad Nacional de Ingeniería ·
 Carlos Pérez Pérez</p>
+
+<p class="descargas">
+  <a class="boton" href="https://github.com/carlosperez100/PLN_SP/raw/main/paper/main.pdf">
+    Descargar el artículo (PDF)</a>
+  <a class="boton sec" href="https://github.com/carlosperez100/PLN_SP/blob/main/Proyecto_PLN_Final.ipynb">
+    Notebook ejecutado</a>
+  <a class="boton sec" href="https://github.com/carlosperez100/PLN_SP">
+    Código</a>
+</p>
 
 <div class="cifras">
   <div class="cifra"><b>{e1['sensibilidad']:.3f}</b><span>Sensibilidad</span></div>
