@@ -1,0 +1,86 @@
+{
+  "generado": "2026-07-31T12:03:56",
+  "corpus": {
+    "notas": 14853,
+    "clases": 8,
+    "train": 11882,
+    "test": 2971
+  },
+  "config": {
+    "max_len": 256,
+    "batch": 8,
+    "acumulacion": 2,
+    "epocas": 2,
+    "lr": 3e-05,
+    "semilla": 42,
+    "dispositivo": "cuda"
+  },
+  "ventana": {
+    "cobertura_media": 0.0904,
+    "tokens_mediana": 3148
+  },
+  "resultados": {
+    "TF-IDF + LinearSVC (texto completo)": {
+      "exactitud": 0.7149,
+      "f1_macro": 0.4592,
+      "f1_micro": 0.7149,
+      "kappa": 0.5443,
+      "segundos": 48.0
+    },
+    "TF-IDF + LinearSVC (truncado a 1150 car.)": {
+      "exactitud": 0.5746,
+      "f1_macro": 0.3301,
+      "f1_micro": 0.5746,
+      "kappa": 0.3148,
+      "segundos": 5.5
+    },
+    "Bio_ClinicalBERT (fine-tuning)": {
+      "exactitud": 0.6072,
+      "f1_macro": 0.2487,
+      "f1_micro": 0.6072,
+      "kappa": 0.3438,
+      "segundos": 10492.9,
+      "epocas": 2,
+      "max_len": 256
+    },
+    "BioBERT (fine-tuning)": {
+      "exactitud": 0.5971,
+      "f1_macro": 0.2097,
+      "f1_micro": 0.5971,
+      "kappa": 0.3182,
+      "segundos": 10513.3,
+      "epocas": 2,
+      "max_len": 256
+    },
+    "TF-IDF + LinearSVC sin balanceo (texto completo)": {
+      "exactitud": 0.7109,
+      "f1_macro": 0.3909,
+      "f1_micro": 0.7109,
+      "kappa": 0.5132,
+      "segundos": 47.0,
+      "nota": "sin ponderacion de clases: condicion emparejada con el ajuste fino de los transformers"
+    },
+    "TF-IDF + LinearSVC sin balanceo (truncado a 1150 car.)": {
+      "exactitud": 0.589,
+      "f1_macro": 0.2747,
+      "f1_micro": 0.589,
+      "kappa": 0.2951,
+      "segundos": 5.3,
+      "nota": "sin ponderacion de clases: condicion emparejada con el ajuste fino de los transformers"
+    },
+    "Bio_ClinicalBERT (fine-tuning, ponderado)": {
+      "exactitud": 0.5429,
+      "f1_macro": 0.3541,
+      "f1_micro": 0.5429,
+      "kappa": 0.3252,
+      "segundos": 14243.2,
+      "epocas": 2,
+      "max_len": 256,
+      "nota": "entropia cruzada PONDERADA por frecuencia inversa de clase"
+    }
+  },
+  "limitacion": "particion por nota, no por paciente: el dataset de la Fase 4 no conserva subject_id",
+  "notas_metodologicas": [
+    "Fase 11b: se anaden variantes lexicas SIN class_weight para emparejar la condicion de entrenamiento de los transformers, que usan entropia cruzada sin ponderar. Sin este control, el F1-macro favorece artificialmente al modelo lexico."
+  ]
+}
