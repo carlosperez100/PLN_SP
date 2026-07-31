@@ -80,7 +80,11 @@ h1 {{ font-size:1.8rem; line-height:1.25; margin:0 0 .4rem; }}
 h2 {{ font-size:1.22rem; margin:2.6rem 0 .8rem; padding-bottom:.35rem;
   border-bottom:2px solid var(--verde); }}
 h3 {{ font-size:1.02rem; margin:1.6rem 0 .5rem; color:var(--suave); }}
-.sub {{ color:var(--suave); margin:0 0 1.6rem; }}
+.autor {{ font-size:1.15rem; font-weight:700; color:var(--texto);
+  margin:.7rem 0 .3rem; padding-left:.7rem;
+  border-left:3px solid var(--verde); }}
+.sub {{ color:var(--suave); margin:0 0 1.6rem; padding-left:.75rem;
+  font-size:.93rem; }}
 .marca {{ font-weight:800; letter-spacing:.5px; }}
 .marca span {{ color:var(--verde); }}
 .chip {{ display:inline-block; background:var(--oro); color:#fff;
@@ -121,9 +125,11 @@ footer {{ margin-top:3rem; padding-top:1rem; border-top:1px solid var(--linea);
 
 <p class="marca"><span>GEM</span>SES <span class="chip">PROTOTIPO</span></p>
 <h1>Detección automática de eventos adversos hospitalarios en epicrisis</h1>
-<p class="sub">Trabajo final · MIA-10 Procesamiento del Lenguaje Natural ·
-Maestría en Inteligencia Artificial, Universidad Nacional de Ingeniería ·
-Carlos Pérez Pérez</p>
+<p class="autor">Mg. Carlos Pérez Pérez</p>
+<p class="sub">Trabajo final del curso <b>MIA-10 · Procesamiento del Lenguaje
+Natural</b><br>
+Maestría en Inteligencia Artificial · Universidad Nacional de Ingeniería<br>
+Docente: Dr. Wester Zela Moraya</p>
 
 <p class="descargas">
   <a class="boton" href="https://github.com/carlosperez100/PLN_SP/raw/main/paper/main.pdf">
