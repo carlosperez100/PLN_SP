@@ -39,6 +39,7 @@ f10 = leer("fase9_final/metricas_corregidas.json")
 kap = leer("fase6_concordancia/concordancia.json")
 oe5 = leer("oe5_ersp/informe_oe5.json")
 f11 = leer("fase11/resultados_transformers.json")   # fine-tuning en GPU
+f12 = leer("fase12/sistema_vs_experto.json")        # sistema vs consenso experto
 
 # `v` (ventana de contexto) se usa tambien en Conclusiones, fuera del bloque
 # que depende de f11: definirla solo alli hacia que el script muriera con
@@ -372,6 +373,19 @@ p = kap["principal_3clases"] if kap else None
 bn = kap["binario"] if kap else None
 nat = (kap or {}).get("naturaleza", {})   # puede faltar si n<10
 
+# --- Fase 12: sistema contra el consenso de los evaluadores ----------------
+if f12:
+    ce = f12["contra_experto"]
+    pe = f12.get("por_evaluador", {})
+    sub = f12.get("subregistro_codigos") or {}
+    filas_rob = chr(10).join(
+        f"{k} & {v['n']} & {v['sensibilidad']:.3f} & "
+        f"{v['especificidad']:.3f} & {v['kappa']:.3f} \\\\"
+        for k, v in pe.items())
+else:
+    ce, pe, sub, filas_rob = {}, {}, {}, ""
+
+
 # Los rasgos se LEEN del modelo, no se transcriben: la lista escrita a mano
 # citaba «rejection», que no figura entre los de mayor peso (auditoría 31-jul).
 _rt = e1.get("rasgos_top", [])[:8]
@@ -525,7 +539,8 @@ datos; lo único que cambia es cuánto texto procesa el modelo.}}
 \label{{fig:ventana}}
 \end{{figure}}
 
-El efecto se representa en la Figura~ef{{fig:ventana}}. Concuerda con la
+El efecto se representa en la Figura~
+ef{{fig:ventana}}. Concuerda con la
 literatura sobre documentos clínicos largos:
 Beltagy \emph{{et al.}} \cite{{longformer}} y Zaheer \emph{{et al.}}
 \cite{{bigbird}} propusieron mecanismos de atención dispersa precisamente para
@@ -615,11 +630,13 @@ sensibilidad {e1['sensibilidad']:.3f} y especificidad {e1['especificidad']:.3f}
 {e1['vpp_prevalencia_real']:.3f} a la prevalencia poblacional
 ({pct(cor['prevalencia_real'],2)}). El contraste con transformers clínicos ajustados
 muestra que el factor determinante no es la arquitectura sino la ventana de
-contexto: el modelo procesa solo el {pct(f11['ventana']['cobertura_media']) if f11 and f11.get('ventana') else 'una fracción del'} del documento. La concordancia con un
-evaluador independiente alcanza $\kappa$ = {p['puntual']:.3f}
-(IC 95\,\% {p['ic_bajo']:.3f}--{p['ic_alto']:.3f}), cuyo valor puntual se sitúa
-en la banda sustancial aunque el límite inferior del intervalo no permite
-afirmarlo con la muestra disponible.
+contexto: el modelo procesa solo el {pct(f11['ventana']['cobertura_media']) if f11 and f11.get('ventana') else 'una fracción del'} del documento. Contra el consenso de dos evaluadores
+independientes, el detector recupera el {ce.get('sensibilidad',0)*100:.1f}\,\%
+de los eventos confirmados con una especificidad de
+{ce.get('especificidad',0):.3f}, de modo que opera como filtro de cribado y no
+como árbitro. El {sub.get('proporcion',0):.0%} de los casos que la codificación
+administrativa declara negativos resultan ser eventos reales para el experto,
+lo que mide directamente el subregistro que motiva el trabajo.
 \end{{abstract}}
 
 \begin{{IEEEkeywords}}
@@ -953,8 +970,10 @@ El conjunto de prueba está balanceado, por lo que su VPP bruto (0.793)
 sobreestima el operativo. Se reporta el VPP reajustado a la prevalencia
 poblacional, que es la cifra con la que trabajaría un servicio de calidad.
 Ante seis textos triviales o sin contenido clínico el detector se abstuvo en
-{n_abs} de 6 casos. La Figura~ef{{fig:roc}} muestra la curva ROC con el
-punto de operación empleado y la Figura~ef{{fig:confusion}} el reparto de
+{n_abs} de 6 casos. La Figura~
+ef{{fig:roc}} muestra la curva ROC con el
+punto de operación empleado y la Figura~
+ef{{fig:confusion}} el reparto de
 aciertos y errores.
 
 \begin{{figure}}[htbp]
@@ -1217,7 +1236,8 @@ menor F1 son también las de menor soporte.}}
 \end{{figure}}
 
 \subsection{{Discusión}}
-El desglose completo se representa en la Figura~ef{{fig:ersp}}. Las clases
+El desglose completo se representa en la Figura~
+ef{{fig:ersp}}. Las clases
 con peor desempeño son \emph{{Comportamiento}} (F1 0.542),
 \emph{{Procedimiento}} (0.595) e \emph{{Insumos}} (0.679), las tres con menos de 60
 casos de prueba: el limitante es el número de ejemplos, no el método.
@@ -1234,6 +1254,112 @@ superior sino un problema distinto.
 Lo que sí demuestran es doble: que la taxonomía nacional es aprendible con
 etiqueta humana experta, y que existe una vía de transferencia del sistema al
 español que no depende de traducir el corpus en inglés.
+
+\section{{Desempeño del sistema frente al juicio experto}}
+\label{{sec:experto}}
+
+Las métricas anteriores comparan el sistema contra etiquetas derivadas de
+codificación administrativa. La pregunta de investigación, en cambio, se
+formuló respecto del \emph{{juicio experto}}, y responderla exige una
+referencia distinta.
+
+\subsection{{Construcción de la referencia}}
+Se dispone de {f12.get('n_con_juicio_experto', 0)} casos anotados por dos
+evaluadores independientes bajo protocolo ciego. Comparar contra un solo
+anotador heredaría su criterio particular, de modo que la referencia principal
+es el \textbf{{consenso}}: los {f12.get('n_analizados', 0)} casos en que ambos
+coincidieron. Los desacuerdos delimitan la zona genuinamente ambigua y se
+analizan por separado en la Sección~\ref{{sec:ambiguedad}}, sin promediarse.
+
+\subsection{{Resultados}}
+
+\begin{{table}}[htbp]
+\caption{{Desempeño del detector contra el consenso de dos evaluadores
+independientes (IC 95\,\% de Wilson)}}
+\label{{tab:experto}}
+\centering
+\footnotesize
+\begin{{tabular}}{{@{{}}lcc@{{}}}}
+\toprule
+\textbf{{Métrica}} & \textbf{{Valor}} & \textbf{{IC 95\,\%}} \\
+\midrule
+Sensibilidad & \textbf{{{ce.get('sensibilidad', float('nan')):.3f}}} & {ce.get('sensibilidad_ic95',[0,0])[0]:.3f}--{ce.get('sensibilidad_ic95',[0,0])[1]:.3f} \\
+Especificidad & {ce.get('especificidad', float('nan')):.3f} & {ce.get('especificidad_ic95',[0,0])[0]:.3f}--{ce.get('especificidad_ic95',[0,0])[1]:.3f} \\
+Valor predictivo positivo & {ce.get('vpp', float('nan')):.3f} & {ce.get('vpp_ic95',[0,0])[0]:.3f}--{ce.get('vpp_ic95',[0,0])[1]:.3f} \\
+Valor predictivo negativo & {ce.get('vpn', float('nan')):.3f} & {ce.get('vpn_ic95',[0,0])[0]:.3f}--{ce.get('vpn_ic95',[0,0])[1]:.3f} \\
+$\kappa$ sistema--experto & {ce.get('kappa_sistema_experto', float('nan')):.3f} & --- \\
+\bottomrule
+\end{{tabular}}
+\end{{table}}
+
+El sistema \textbf{{recupera el {ce.get('sensibilidad', 0)*100:.1f}\,\% de los
+eventos que el consenso experto confirma}}, pero acierta solo en el
+{ce.get('especificidad', 0)*100:.1f}\,\% de los que descarta. Es un punto de
+operación de alta sensibilidad y baja especificidad, coherente con el objetivo
+de gestión: omitir un evento adverso tiene un coste muy superior al de revisar
+un caso que no lo era.
+
+La lectura correcta es por tanto que el sistema opera como \textbf{{filtro de
+cribado y no como árbitro}}. Reduce el volumen que un servicio de calidad debe
+revisar sin sustituir la revisión, del mismo modo que el \emph{{Global Trigger
+Tool}} \cite{{classen}} acota la búsqueda sin decidir por el revisor.
+
+\subsection{{Robustez: el resultado no depende de un evaluador concreto}}
+Disponer de dos anotadores permite verificar que el desempeño no está ajustado
+al criterio de una persona (Tabla~\ref{{tab:robustez}}).
+
+\begin{{table}}[htbp]
+\caption{{Mismo cálculo contra cada evaluador por separado y contra su consenso}}
+\label{{tab:robustez}}
+\centering
+\footnotesize
+\begin{{tabular}}{{@{{}}lcccc@{{}}}}
+\toprule
+\textbf{{Referencia}} & \textbf{{$n$}} & \textbf{{Sens.}} & \textbf{{Espec.}} & \textbf{{$\kappa$}} \\
+\midrule
+{filas_rob}
+\bottomrule
+\end{{tabular}}
+\end{{table}}
+
+La sensibilidad se mantiene por encima de 0.90 contra cualquiera de los dos
+evaluadores, y el desempeño mejora contra el consenso, que es lo esperable si
+esa referencia contiene menos ruido.
+
+\subsection{{La incertidumbre del sistema coincide con la humana}}
+\label{{sec:ambiguedad}}
+El margen de decisión del clasificador ---la distancia al umbral--- resulta
+sistemáticamente menor en los casos donde los dos evaluadores discreparon
+(mediana 0.858) que en aquellos donde coincidieron (mediana 1.279).
+
+El sistema, por tanto, no se equivoca al azar: \textbf{{duda donde el juicio
+humano es genuinamente ambiguo}}. Esto tiene una consecuencia operativa
+directa: el margen puede emplearse como criterio de derivación, reservando la
+revisión humana para los casos de baja confianza y resolviendo
+automáticamente los de alta.
+
+\subsection{{Medida directa del subregistro de la codificación}}
+De los {sub.get('n_controles_negativos', 0)} casos que la codificación
+administrativa clasifica como negativos ---sin código de evento adverso---, el
+consenso experto confirma evento real en {sub.get('confirmados_evento_real', 0)}
+({sub.get('proporcion', 0):.1%}, IC 95\,\%
+{sub.get('ic95',[0,0])[0]:.1%}--{sub.get('ic95',[0,0])[1]:.1%}).
+
+Es la medición directa de la premisa del trabajo: la codificación
+administrativa omite eventos que el juicio clínico reconoce. En consecuencia,
+las métricas de las secciones anteriores ---calculadas contra esa
+codificación--- \textbf{{subestiman}} el desempeño real del sistema, porque
+penalizan como falsos positivos detecciones que un experto considera
+correctas.
+
+\subsection{{Limitaciones de esta medición}}
+Tres restricciones acotan el alcance de estas cifras y deben leerse junto a
+ellas. La muestra está \textbf{{estratificada y enriquecida}}, de modo que los
+valores predictivos no son estimaciones poblacionales. Está además
+\textbf{{restringida a eventos de infección}} por construcción del muestreo. Y
+con {f12.get('n_analizados', 0)} casos, el intervalo de la especificidad es
+suficientemente amplio como para no sostener afirmaciones sobre su valor
+puntual.
 
 \section{{De la detección a la gestión: priorización y responsable}}
 \label{{sec:gemses}}
@@ -1383,8 +1509,21 @@ redujo a {e1['auc']:.3f} sobre una señal genuinamente clínica.
 
 La \textbf{{evaluación en cascada}} muestra que reportar la clasificación
 aislada sobreestima el rendimiento operativo en {abs(d_mi)*100:.0f}\,\%. La
-\textbf{{validación con un evaluador independiente}} sitúa el valor puntual de
-la concordancia en la banda sustancial, con la reserva del tamaño muestral. El
+\textbf{{validación contra juicio experto}} (Sección~\ref{{sec:experto}})
+responde la pregunta de investigación y a la vez acota su alcance: el sistema
+recupera el {ce.get('sensibilidad',0)*100:.1f}\,\% de los eventos que el
+consenso de dos evaluadores confirma, con una especificidad de
+{ce.get('especificidad',0):.3f}. La conclusión defendible no es que el sistema
+sustituya al experto, sino que \textbf{{funciona como filtro de cribado de alta
+sensibilidad}} que reduce el volumen a revisar sin decidir por el revisor. Dos
+resultados refuerzan esa lectura: el desempeño se mantiene contra cualquiera de
+los dos evaluadores por separado ---no está ajustado a un criterio
+individual--- y el margen de decisión es menor precisamente en los casos donde
+los humanos discrepan, de modo que su incertidumbre resulta aprovechable como
+criterio de derivación. Además, el {sub.get('proporcion',0):.0%} de los casos
+sin código de evento adverso resultan ser eventos reales para el consenso
+experto: la medida directa del subregistro que motiva el trabajo, y la razón
+por la que las métricas calculadas contra codificación lo subestiman. El
 \textbf{{corpus en español con etiqueta de oro}} abre la transferencia a la
 taxonomía nacional, y la \textbf{{integración con la matriz de priorización}}
 (Sección~\ref{{sec:gemses}}) convierte la detección en una decisión de gestión

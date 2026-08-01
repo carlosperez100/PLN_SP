@@ -29,6 +29,13 @@ f10 = leer("fase9_final/metricas_corregidas.json")
 f11 = leer("fase11/resultados_transformers.json")
 kap = leer("fase6_concordancia/concordancia.json")
 oe5 = leer("oe5_ersp/informe_oe5.json")
+f12 = leer("fase12/sistema_vs_experto.json")
+ce = (f12 or {}).get("contra_experto", {})
+sub = (f12 or {}).get("subregistro_codigos") or {}
+rob = "".join(
+    f'<tr><td>{k}</td><td>{v["n"]}</td><td>{v["sensibilidad"]:.3f}</td>'
+    f'<td>{v["especificidad"]:.3f}</td><td>{v["kappa"]:.3f}</td></tr>'
+    for k, v in (f12 or {}).get("por_evaluador", {}).items())
 
 e1 = f9["etapa1_deteccion"]
 cor = f9["corpus"]
@@ -210,6 +217,41 @@ modo que la afirmación se enuncia con esa reserva. Con prevalencias tan
 desiguales el kappa se deprime, y por eso se reporta junto al PABAK y al
 acuerdo observado.</p>
 </div>
+
+<h2>El sistema frente al juicio experto</h2>
+<p>Las métricas anteriores se calculan contra códigos CIE. La pregunta de
+investigación se formuló respecto del juicio experto, y responderla exige otra
+referencia: el <b>consenso de dos evaluadores independientes</b> sobre los casos
+en que ambos coincidieron.</p>
+<div class="cifras">
+  <div class="cifra"><b>{ce.get('sensibilidad',0):.3f}</b><span>Sensibilidad vs. experto</span></div>
+  <div class="cifra"><b>{ce.get('especificidad',0):.3f}</b><span>Especificidad</span></div>
+  <div class="cifra"><b>{ce.get('vpp',0):.3f}</b><span>VPP</span></div>
+  <div class="cifra"><b>{sub.get('proporcion',0):.0%}</b><span>Negativos que sí eran evento</span></div>
+</div>
+<div class="destacado">
+<p>El sistema <b>recupera el {ce.get('sensibilidad',0)*100:.1f}&nbsp;% de los eventos
+que el consenso experto confirma</b>, pero acierta solo en el
+{ce.get('especificidad',0)*100:.1f}&nbsp;% de los que descarta. La conclusión
+defendible no es que sustituya al experto, sino que <b>funciona como filtro de
+cribado de alta sensibilidad</b>: reduce el volumen a revisar sin decidir por el
+revisor.</p>
+</div>
+<h3>El resultado no depende de un evaluador concreto</h3>
+<div class="tabla-scroll"><table>
+<tr><th>Referencia</th><th>n</th><th>Sensibilidad</th><th>Especificidad</th><th>Kappa</th></tr>
+{rob}
+</table></div>
+<h3>La incertidumbre del sistema coincide con la humana</h3>
+<p>El margen de decisión del clasificador es menor en los casos donde los dos
+evaluadores discreparon (mediana 0.858) que donde coincidieron (1.279). El
+sistema <b>duda donde el juicio humano es genuinamente ambiguo</b>, lo que
+permite usar ese margen como criterio de derivación a revisión.</p>
+<h3>Medida directa del subregistro</h3>
+<p>De los casos que la codificación administrativa declara negativos, el
+<b>{sub.get('proporcion',0):.0%}</b> resultan ser eventos reales para el consenso
+experto (IC&nbsp;95&nbsp;% {sub.get('ic95',[0,0])[0]:.0%}–{sub.get('ic95',[0,0])[1]:.0%}).
+Es la premisa del trabajo, medida con datos propios en vez de citada.</p>
 
 <h2>Transferencia al español (etiqueta de oro)</h2>
 <p>Corpus de ocurrencias notificadas al sistema institucional, codificadas por

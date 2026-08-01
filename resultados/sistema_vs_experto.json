@@ -1,0 +1,67 @@
+{
+  "generado": "2026-08-01T18:03:43",
+  "proposito": "desempeno del detector contra juicio experto (no contra codigos CIE), para responder la pregunta de investigacion",
+  "referencia": "consenso de dos evaluadores independientes",
+  "n_con_juicio_experto": 78,
+  "por_evaluador": {
+    "Evaluador A": {
+      "n": 78,
+      "sensibilidad": 0.9483,
+      "especificidad": 0.5,
+      "kappa": 0.5063
+    },
+    "Evaluador B": {
+      "n": 77,
+      "sensibilidad": 0.9032,
+      "especificidad": 0.4667,
+      "kappa": 0.3896
+    },
+    "Consenso": {
+      "n": 68,
+      "sensibilidad": 0.9455,
+      "especificidad": 0.5385,
+      "kappa": 0.5307
+    }
+  },
+  "n_excluidos_no_determinable": 0,
+  "n_analizados": 68,
+  "matriz": {
+    "vp": 52,
+    "fp": 6,
+    "fn": 3,
+    "vn": 7
+  },
+  "contra_experto": {
+    "sensibilidad": 0.9455,
+    "sensibilidad_ic95": [
+      0.8515,
+      0.9813
+    ],
+    "especificidad": 0.5385,
+    "especificidad_ic95": [
+      0.2914,
+      0.7679
+    ],
+    "vpp": 0.8966,
+    "vpp_ic95": [
+      0.7921,
+      0.9517
+    ],
+    "vpn": 0.7,
+    "vpn_ic95": [
+      0.3968,
+      0.8922
+    ],
+    "kappa_sistema_experto": 0.5307
+  },
+  "subregistro_codigos": {
+    "n_controles_negativos": 16,
+    "confirmados_evento_real": 4,
+    "proporcion": 0.25,
+    "ic95": [
+      0.1018,
+      0.495
+    ]
+  },
+  "limitacion": "la muestra de revision esta restringida a eventos de infeccion: estas cifras describen ese subconjunto, no el pipeline completo"
+}

@@ -156,6 +156,41 @@ desiguales el kappa se deprime, y por eso se reporta junto al PABAK y al
 acuerdo observado.</p>
 </div>
 
+<h2>El sistema frente al juicio experto</h2>
+<p>Las métricas anteriores se calculan contra códigos CIE. La pregunta de
+investigación se formuló respecto del juicio experto, y responderla exige otra
+referencia: el <b>consenso de dos evaluadores independientes</b> sobre los casos
+en que ambos coincidieron.</p>
+<div class="cifras">
+  <div class="cifra"><b>0.946</b><span>Sensibilidad vs. experto</span></div>
+  <div class="cifra"><b>0.538</b><span>Especificidad</span></div>
+  <div class="cifra"><b>0.897</b><span>VPP</span></div>
+  <div class="cifra"><b>25%</b><span>Negativos que sí eran evento</span></div>
+</div>
+<div class="destacado">
+<p>El sistema <b>recupera el 94.5&nbsp;% de los eventos
+que el consenso experto confirma</b>, pero acierta solo en el
+53.8&nbsp;% de los que descarta. La conclusión
+defendible no es que sustituya al experto, sino que <b>funciona como filtro de
+cribado de alta sensibilidad</b>: reduce el volumen a revisar sin decidir por el
+revisor.</p>
+</div>
+<h3>El resultado no depende de un evaluador concreto</h3>
+<div class="tabla-scroll"><table>
+<tr><th>Referencia</th><th>n</th><th>Sensibilidad</th><th>Especificidad</th><th>Kappa</th></tr>
+<tr><td>Evaluador A</td><td>78</td><td>0.948</td><td>0.500</td><td>0.506</td></tr><tr><td>Evaluador B</td><td>77</td><td>0.903</td><td>0.467</td><td>0.390</td></tr><tr><td>Consenso</td><td>68</td><td>0.946</td><td>0.538</td><td>0.531</td></tr>
+</table></div>
+<h3>La incertidumbre del sistema coincide con la humana</h3>
+<p>El margen de decisión del clasificador es menor en los casos donde los dos
+evaluadores discreparon (mediana 0.858) que donde coincidieron (1.279). El
+sistema <b>duda donde el juicio humano es genuinamente ambiguo</b>, lo que
+permite usar ese margen como criterio de derivación a revisión.</p>
+<h3>Medida directa del subregistro</h3>
+<p>De los casos que la codificación administrativa declara negativos, el
+<b>25%</b> resultan ser eventos reales para el consenso
+experto (IC&nbsp;95&nbsp;% 10%–50%).
+Es la premisa del trabajo, medida con datos propios en vez de citada.</p>
+
 <h2>Transferencia al español (etiqueta de oro)</h2>
 <p>Corpus de ocurrencias notificadas al sistema institucional, codificadas por
 profesionales expertos contra los Anexos 02 y 03. A diferencia de MIMIC —cuyas
@@ -198,7 +233,7 @@ informe.</p>
 
 <footer>
 <p>Generado automáticamente desde los resultados del pipeline el
-31/07/2026. Las cifras no se transcriben a mano: se leen de los
+01/08/2026. Las cifras no se transcriben a mano: se leen de los
 archivos de resultados, de modo que este sitio, el informe y la tesis no puedan
 divergir. Regenerar con <code>python generar_sitio.py</code>.</p>
 <p><a href="https://github.com/carlosperez100/PLN_SP">Repositorio</a> ·

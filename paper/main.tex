@@ -45,11 +45,13 @@ sensibilidad 0.762 y especificidad 0.770
 0.455 a la prevalencia poblacional
 (20.12\%). El contraste con transformers clínicos ajustados
 muestra que el factor determinante no es la arquitectura sino la ventana de
-contexto: el modelo procesa solo el 9.0\% del documento. La concordancia con un
-evaluador independiente alcanza $\kappa$ = 0.644
-(IC 95\,\% 0.413--0.817), cuyo valor puntual se sitúa
-en la banda sustancial aunque el límite inferior del intervalo no permite
-afirmarlo con la muestra disponible.
+contexto: el modelo procesa solo el 9.0\% del documento. Contra el consenso de dos evaluadores
+independientes, el detector recupera el 94.5\,\%
+de los eventos confirmados con una especificidad de
+0.538, de modo que opera como filtro de cribado y no
+como árbitro. El 25% de los casos que la codificación
+administrativa declara negativos resultan ser eventos reales para el experto,
+lo que mide directamente el subregistro que motiva el trabajo.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -787,6 +789,114 @@ Lo que sí demuestran es doble: que la taxonomía nacional es aprendible con
 etiqueta humana experta, y que existe una vía de transferencia del sistema al
 español que no depende de traducir el corpus en inglés.
 
+\section{Desempeño del sistema frente al juicio experto}
+\label{sec:experto}
+
+Las métricas anteriores comparan el sistema contra etiquetas derivadas de
+codificación administrativa. La pregunta de investigación, en cambio, se
+formuló respecto del \emph{juicio experto}, y responderla exige una
+referencia distinta.
+
+\subsection{Construcción de la referencia}
+Se dispone de 78 casos anotados por dos
+evaluadores independientes bajo protocolo ciego. Comparar contra un solo
+anotador heredaría su criterio particular, de modo que la referencia principal
+es el \textbf{consenso}: los 68 casos en que ambos
+coincidieron. Los desacuerdos delimitan la zona genuinamente ambigua y se
+analizan por separado en la Sección~\ref{sec:ambiguedad}, sin promediarse.
+
+\subsection{Resultados}
+
+\begin{table}[htbp]
+\caption{Desempeño del detector contra el consenso de dos evaluadores
+independientes (IC 95\,\% de Wilson)}
+\label{tab:experto}
+\centering
+\footnotesize
+\begin{tabular}{@{}lcc@{}}
+\toprule
+\textbf{Métrica} & \textbf{Valor} & \textbf{IC 95\,\%} \\
+\midrule
+Sensibilidad & \textbf{0.946} & 0.852--0.981 \\
+Especificidad & 0.538 & 0.291--0.768 \\
+Valor predictivo positivo & 0.897 & 0.792--0.952 \\
+Valor predictivo negativo & 0.700 & 0.397--0.892 \\
+$\kappa$ sistema--experto & 0.531 & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+El sistema \textbf{recupera el 94.5\,\% de los
+eventos que el consenso experto confirma}, pero acierta solo en el
+53.8\,\% de los que descarta. Es un punto de
+operación de alta sensibilidad y baja especificidad, coherente con el objetivo
+de gestión: omitir un evento adverso tiene un coste muy superior al de revisar
+un caso que no lo era.
+
+La lectura correcta es por tanto que el sistema opera como \textbf{filtro de
+cribado y no como árbitro}. Reduce el volumen que un servicio de calidad debe
+revisar sin sustituir la revisión, del mismo modo que el \emph{Global Trigger
+Tool} \cite{classen} acota la búsqueda sin decidir por el revisor.
+
+\subsection{Robustez: el resultado no depende de un evaluador concreto}
+Disponer de dos anotadores permite verificar que el desempeño no está ajustado
+al criterio de una persona (Tabla~\ref{tab:robustez}).
+
+\begin{table}[htbp]
+\caption{Mismo cálculo contra cada evaluador por separado y contra su consenso}
+\label{tab:robustez}
+\centering
+\footnotesize
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\textbf{Referencia} & \textbf{$n$} & \textbf{Sens.} & \textbf{Espec.} & \textbf{$\kappa$} \\
+\midrule
+Evaluador A & 78 & 0.948 & 0.500 & 0.506 \\
+Evaluador B & 77 & 0.903 & 0.467 & 0.390 \\
+Consenso & 68 & 0.946 & 0.538 & 0.531 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+La sensibilidad se mantiene por encima de 0.90 contra cualquiera de los dos
+evaluadores, y el desempeño mejora contra el consenso, que es lo esperable si
+esa referencia contiene menos ruido.
+
+\subsection{La incertidumbre del sistema coincide con la humana}
+\label{sec:ambiguedad}
+El margen de decisión del clasificador ---la distancia al umbral--- resulta
+sistemáticamente menor en los casos donde los dos evaluadores discreparon
+(mediana 0.858) que en aquellos donde coincidieron (mediana 1.279).
+
+El sistema, por tanto, no se equivoca al azar: \textbf{duda donde el juicio
+humano es genuinamente ambiguo}. Esto tiene una consecuencia operativa
+directa: el margen puede emplearse como criterio de derivación, reservando la
+revisión humana para los casos de baja confianza y resolviendo
+automáticamente los de alta.
+
+\subsection{Medida directa del subregistro de la codificación}
+De los 16 casos que la codificación
+administrativa clasifica como negativos ---sin código de evento adverso---, el
+consenso experto confirma evento real en 4
+(25.0%, IC 95\,\%
+10.2%--49.5%).
+
+Es la medición directa de la premisa del trabajo: la codificación
+administrativa omite eventos que el juicio clínico reconoce. En consecuencia,
+las métricas de las secciones anteriores ---calculadas contra esa
+codificación--- \textbf{subestiman} el desempeño real del sistema, porque
+penalizan como falsos positivos detecciones que un experto considera
+correctas.
+
+\subsection{Limitaciones de esta medición}
+Tres restricciones acotan el alcance de estas cifras y deben leerse junto a
+ellas. La muestra está \textbf{estratificada y enriquecida}, de modo que los
+valores predictivos no son estimaciones poblacionales. Está además
+\textbf{restringida a eventos de infección} por construcción del muestreo. Y
+con 68 casos, el intervalo de la especificidad es
+suficientemente amplio como para no sostener afirmaciones sobre su valor
+puntual.
+
 \section{De la detección a la gestión: priorización y responsable}
 \label{sec:gemses}
 
@@ -935,8 +1045,21 @@ redujo a 0.843 sobre una señal genuinamente clínica.
 
 La \textbf{evaluación en cascada} muestra que reportar la clasificación
 aislada sobreestima el rendimiento operativo en 34\,\%. La
-\textbf{validación con un evaluador independiente} sitúa el valor puntual de
-la concordancia en la banda sustancial, con la reserva del tamaño muestral. El
+\textbf{validación contra juicio experto} (Sección~\ref{sec:experto})
+responde la pregunta de investigación y a la vez acota su alcance: el sistema
+recupera el 94.5\,\% de los eventos que el
+consenso de dos evaluadores confirma, con una especificidad de
+0.538. La conclusión defendible no es que el sistema
+sustituya al experto, sino que \textbf{funciona como filtro de cribado de alta
+sensibilidad} que reduce el volumen a revisar sin decidir por el revisor. Dos
+resultados refuerzan esa lectura: el desempeño se mantiene contra cualquiera de
+los dos evaluadores por separado ---no está ajustado a un criterio
+individual--- y el margen de decisión es menor precisamente en los casos donde
+los humanos discrepan, de modo que su incertidumbre resulta aprovechable como
+criterio de derivación. Además, el 25% de los casos
+sin código de evento adverso resultan ser eventos reales para el consenso
+experto: la medida directa del subregistro que motiva el trabajo, y la razón
+por la que las métricas calculadas contra codificación lo subestiman. El
 \textbf{corpus en español con etiqueta de oro} abre la transferencia a la
 taxonomía nacional, y la \textbf{integración con la matriz de priorización}
 (Sección~\ref{sec:gemses}) convierte la detección en una decisión de gestión
