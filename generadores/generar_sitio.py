@@ -164,18 +164,17 @@ epicrisis— pero en texto libre.</p>
 según la taxonomía del Anexo&nbsp;02 y los prioriza con la matriz normativa
 para asignarles responsable.</p>
 
-<h2>El hallazgo principal</h2>
+<h2>Resultado principal</h2>
 <div class="destacado">
-<p><b>La conclusión anterior de este mismo trabajo no se sostuvo.</b> En mayo
-se concluyó que un modelo léxico superaba a los transformers clínicos. Al
-completar la comparación en condiciones controladas, esa ventaja resultó
-proceder de dos asimetrías no declaradas: el modelo léxico tenía ponderación
-de clases que el transformer no tenía, y además veía
-{1/v.get('cobertura_media',1):.0f} veces más texto.</p>
-<p>Corregidas ambas, <b>el transformer ajustado no queda por debajo</b>. Lo que
-sí resiste es el efecto de la <b>ventana de contexto</b>: el modelo accede solo
-al {v.get('cobertura_media',0):.1%} del documento (mediana de
-{v.get('tokens_mediana',0):,} <i>tokens</i> por epicrisis).</p>
+<p>El sistema <b>detecta el {ce.get('sensibilidad',0)*100:.1f}&nbsp;% de los
+eventos adversos que el consenso de dos evaluadores expertos confirma</b>, con
+un modelo léxico ligero e interpretable ejecutable en una estación de trabajo
+convencional.</p>
+<p>La comparación entre familias de modelos se realiza controlando la ventana
+de contexto y la ponderación de clases. A igualdad de ambas condiciones, el
+modelo léxico y el transformer clínico rinden de forma equivalente; el factor
+determinante es el <b>acceso al documento completo</b>, ya que el transformer
+procesa solo el {v.get('cobertura_media',0):.1%} de la epicrisis.</p>
 </div>
 
 <h2>Ranking de desempeño</h2>

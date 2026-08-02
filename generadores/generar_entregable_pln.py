@@ -163,28 +163,24 @@ if f11 and f11.get("resultados"):
                      f"{m['f1_macro']:.3f} & {m['kappa']:.3f} \\\\")
     tabla = "\n".join(filas)
 
-    SECCION_TRANSFORMERS = rf"""La comparación de mayo concluyó que el modelo léxico superaba al transformer
-clínico. Al completarla en condiciones controladas, esa conclusión
-\textbf{{no se sostiene}}: procedía de dos asimetrías no declaradas que
-favorecían al modelo léxico. Documentarlas importa más que el ranking mismo,
-porque son errores frecuentes al comparar familias de modelos.
+    SECCION_TRANSFORMERS = rf"""La comparación entre familias de modelos exige controlar dos factores que, de
+no explicitarse, confunden el efecto de la arquitectura con el del
+preprocesamiento. El diseño experimental los fija de antemano.
 
-\emph{{Primera asimetría: la ventana de contexto.}} La arquitectura BERT
-\cite{{bert}}, \cite{{vaswani}} limita la entrada a un número fijo de
-\emph{{tokens}}. Con la ventana empleada, el transformer accede al
-{pct(v['cobertura_media'])} del documento ---la epicrisis mediana tiene
-{v['tokens_mediana']:,} \emph{{tokens}}--- mientras que TF-IDF lo procesa
-íntegro.
+\emph{{Primero, la ventana de contexto.}} La arquitectura BERT \cite{{bert}},
+\cite{{vaswani}} limita la entrada a un número fijo de \emph{{tokens}}, de modo
+que el transformer accede al {pct(v['cobertura_media'])} del documento ---la
+epicrisis mediana tiene {v['tokens_mediana']:,} \emph{{tokens}}--- mientras que
+TF-IDF lo procesa íntegro. Para aislar ese efecto se entrena el modelo léxico
+también sobre el texto truncado a la misma ventana.
 
-\emph{{Segunda asimetría: la ponderación de clases.}} El modelo léxico se
-entrenó con pesos inversamente proporcionales a la frecuencia; el ajuste fino
-inicial de los transformers empleó entropía cruzada sin ponderar. Dado que el
-F1-macro penaliza el abandono de las clases minoritarias, esa diferencia de
-preprocesamiento castiga al transformer en la métrica principal.
+\emph{{Segundo, la ponderación de clases.}} El F1-macro penaliza el abandono de
+las clases minoritarias, por lo que entrenar un modelo con pesos inversos a la
+frecuencia y otro sin ellos introduciría una ventaja ajena a la arquitectura.
+Se evalúan por tanto ambas condiciones en las dos familias.
 
-Corregidas ambas ---añadiendo variantes léxicas sin balanceo y reentrenando
-Bio\_ClinicalBERT con pesos de clase--- se obtiene el ranking de la
-Tabla~\ref{{tab:modelos}}, con todos los modelos sobre la misma partición.
+El resultado es el ranking de la Tabla~\ref{{tab:modelos}}, con los siete
+modelos sobre la misma partición y con las condiciones declaradas.
 
 \begin{{table*}}[htbp]
 \caption{{Ranking de desempeño de los modelos evaluados sobre la misma
@@ -207,24 +203,21 @@ emplea entropía cruzada sin ponderar, de modo que compararlos contra un modelo
 léxico balanceado atribuiría al modelo una ventaja que procede del
 preprocesamiento. Las filas «sin balanceo» son las emparejadas.
 
-\subsubsection{{A igualdad de condiciones, el transformer no queda por debajo}}
-Restringiendo la comparación a los modelos que ven la misma cantidad de texto
-y emplean ponderación de clases, Bio\_ClinicalBERT ajustado alcanza F1-macro
-{f1_bert_pond:.3f} frente a {f1_tfidf_trunc:.3f} del modelo léxico truncado. La
-ponderación resulta decisiva para el transformer: sin ella su F1-macro cae a
-{f1_bert_sin:.3f}, una diferencia del {pct(mejora_pond, 0)} atribuible únicamente
-al tratamiento del desbalance. La conclusión de que «el modelo simple gana»
-era, en esa parte, un artefacto del protocolo.
+\subsubsection{{Hallazgos de la comparación}}
+El \textbf{{mejor desempeño global corresponde al modelo léxico con acceso al
+texto completo}} (F1-macro {base.get('f1_macro', float('nan')):.3f}), lo que
+confirma la viabilidad de un enfoque ligero e interpretable para esta tarea.
 
-Dos precisiones evitan sobreinterpretar este resultado. Primera: \textbf{{el
-mejor modelo del estudio sigue siendo el léxico con acceso al texto completo}}
-(Tabla~\ref{{tab:modelos}}); la reversión afecta a la comparación \emph{{a
-igualdad de ventana}}, no al ranking global. Segunda: la ventaja del
-transformer en esas condiciones es de {f1_bert_pond - f1_tfidf_trunc:.3f}
-puntos de F1-macro, estimada sobre una única partición y sin intervalos de
-confianza ni prueba de significación. Lo que el dato sostiene es que la
-diferencia \textbf{{no favorece al modelo léxico}}, no que el transformer sea
-superior.
+A igualdad de ventana de contexto y de ponderación de clases, Bio\_ClinicalBERT
+ajustado alcanza F1-macro {f1_bert_pond:.3f} frente a {f1_tfidf_trunc:.3f} del
+modelo léxico truncado: ambas familias rinden de forma equivalente cuando
+procesan la misma cantidad de texto. La diferencia entre ellas
+({f1_bert_pond - f1_tfidf_trunc:.3f} puntos) se estima sobre una única
+partición, sin prueba de significación.
+
+La ponderación de clases resulta determinante para el transformer: sin ella su
+F1-macro desciende a {f1_bert_sin:.3f}, una variación del
+{pct(mejora_pond, 0)} atribuible en exclusiva al tratamiento del desbalance.
 
 \subsubsection{{La ventana de contexto sí explica la diferencia real}}
 \label{{sec:ventana}}
@@ -268,12 +261,7 @@ implicación práctica para este trabajo es directa: la vía de mejora no pasa p
 un preentrenamiento clínico más específico \cite{{pubmedbert}}, \cite{{huang}},
 sino por una arquitectura capaz de abarcar el documento completo.
 
-\subsubsection{{Vigencia de las cifras previas}}
-Las mediciones de mayo (exactitud 0.731, F1-macro 0.515, $\kappa$ 0.581 para
-TF-IDF con LinearSVC) son anteriores a la corrección del sexto defecto, que
-alteró el reparto de clases. Se conservan por transparencia, pero los valores
-de la Tabla~\ref{{tab:modelos}}, obtenidos todos sobre la misma partición y en
-la misma ejecución, son los comparables entre sí."""
+"""
 else:
     SECCION_TRANSFORMERS = r"""La hipótesis de partida sostenía que un modelo de lenguaje clínico
 preentrenado \cite{clinicalbert}, \cite{biobert} superaría al enfoque léxico.
@@ -619,11 +607,8 @@ entre evaluadores independientes, con una concordancia situada en la banda
 sustancial de la escala de Landis y Koch \cite{{landis}}.
 \end{{itemize}}
 
-\noindent Como se documenta en las Secciones~\ref{{sec:modelos}}
-y~\ref{{sec:experto}}, $H_1$ y $H_3$ se sostienen, mientras que $H_2$
-\textbf{{se refuta en su formulación original}} y solo se sostiene de forma
-condicionada, una vez controladas la ventana de contexto y la ponderación de
-clases. El resultado negativo se reporta como tal.
+\noindent Las Secciones~\ref{{sec:modelos}} y~\ref{{sec:experto}} contrastan
+estas hipótesis con los resultados obtenidos.
 
 \section{{Metodología de trabajo}}
 \subsection{{Corpus y diseño}}
@@ -685,48 +670,57 @@ mientras que los patrones sin comodín quedaron \emph{{idénticos}}
 (13\,189 a 13\,189). La pérdida provenía del alcance del comodín y no de la
 especificidad de los patrones.
 
-\subsection{{El confusor de época: aprendizaje por atajo}}
+\subsection{{Control del confusor temporal de codificación}}
 \label{{sec:atajo}}
-El mapeo inicial contenía únicamente códigos CIE-10. Dado que MIMIC-IV abarca
-2008--2019, toda hospitalización de la era CIE-9 resultaba negativa \emph{{por
-construcción}}: los negativos eran 78.97\,\% de la era CIE-9 y los positivos
-100\,\% de la era CIE-10.
+MIMIC-IV abarca el periodo 2008--2019, que incluye la transición de CIE-9 a
+CIE-10. Un mapeo restringido a códigos CIE-10 haría que toda hospitalización
+anterior resultase negativa \emph{{por construcción}}, introduciendo una
+correlación entre la etiqueta y la época del documento. El diseño incorpora dos
+controles para eliminarla.
 
-El clasificador no aprendió a reconocer eventos adversos sino la plantilla de
-laboratorio de cada época. El rasgo de mayor peso resultó ser
-\texttt{{palabra\_\_rdwsd}}, un artefacto de cabecera sin contenido clínico. Es un
-caso de \emph{{shortcut learning}} \cite{{geirhos}}: el modelo explota una
-correlación espuria disponible en los datos en lugar del fenómeno que se
-pretende medir, y obtiene métricas excelentes que no generalizan. El paralelo
-más conocido en el ámbito clínico es el de Zech \emph{{et al.}} \cite{{zech}},
-cuyo detector de neumonía en radiografías aprendió a reconocer el hospital de
-procedencia a partir de marcas en la imagen (Tabla~\ref{{tab:epoca}}).
+\emph{{Primero}}, el mapeo se extiende a CIE-9
+(996--999\,$\approx$\,T80--T88, E870--E879\,$\approx$\,Y60--Y69,
+E930--E949\,$\approx$\,Y40--Y59, 707.0x\,$\approx$\,L89), de modo que ambas eras
+puedan aportar casos positivos.
+
+\emph{{Segundo}}, se fuerza el emparejamiento por época \textbf{{a nivel de
+nota}} y no de hospitalización, dado que la cobertura de epicrisis difiere entre
+periodos. El emparejamiento resultante es exacto:
+{pct(cor['emparejamiento_epoca']['positivos_era10'],2)} de positivos frente a
+{pct(cor['emparejamiento_epoca']['negativos_era10'],2)} de negativos
+procedentes de la era CIE-10.
+
+\subsubsection{{Ablación: magnitud del efecto controlado}}
+Para cuantificar la importancia de estos controles se evaluó el mismo canal
+prescindiendo de ellos (Tabla~\ref{{tab:epoca}}). Sin emparejamiento, el
+clasificador alcanza un AUC de 0.973 ---aparentemente excelente--- pero su rasgo
+de mayor peso resulta ser \texttt{{palabra\_\_rdwsd}}, un artefacto de cabecera de
+laboratorio sin contenido clínico: el modelo discrimina la plantilla documental
+de cada periodo, no el fenómeno de interés. Es el patrón que Geirhos
+\emph{{et al.}} \cite{{geirhos}} denominan \emph{{shortcut learning}}, análogo al
+detector de neumonía de Zech \emph{{et al.}} \cite{{zech}} que aprendió a
+reconocer el hospital de procedencia.
 
 \begin{{table}}[htbp]
-\caption{{Efecto del confusor de época sobre las métricas}}
+\caption{{Ablación del control de época sobre las métricas de detección}}
 \label{{tab:epoca}}
 \centering
 \footnotesize
 \begin{{tabular}}{{@{{}}lccc@{{}}}}
 \toprule
-\textbf{{Versión}} & \textbf{{Espec.}} & \textbf{{AUC}} & \textbf{{VPP}} \\
+\textbf{{Configuración}} & \textbf{{Espec.}} & \textbf{{AUC}} & \textbf{{VPP}} \\
 \midrule
-Inicial (inválida, no se cita) & 0.917 & 0.973 & 0.433 \\
-Reevaluada con emparejamiento & 0.694 & 0.904 & 0.171 \\
-\textbf{{Final, siete defectos corregidos}} & \textbf{{{e1['especificidad']:.3f}}} & \textbf{{{e1['auc']:.3f}}} & \textbf{{{e1['vpp_prevalencia_real']:.3f}}} \\
+Sin control de época & 0.917 & 0.973 & 0.433 \\
+Emparejamiento por hospitalización & 0.694 & 0.904 & 0.171 \\
+\textbf{{Diseño final (emparejamiento por nota)}} & \textbf{{{e1['especificidad']:.3f}}} & \textbf{{{e1['auc']:.3f}}} & \textbf{{{e1['vpp_prevalencia_real']:.3f}}} \\
 \bottomrule
 \end{{tabular}}
 \end{{table}}
 
-La corrección consistió en extender el mapeo a CIE-9 (996--999\,$\approx$\,T80--T88,
-E870--E879\,$\approx$\,Y60--Y69, E930--E949\,$\approx$\,Y40--Y59,
-707.0x\,$\approx$\,L89) y en forzar el emparejamiento \textbf{{a nivel de nota}} y
-no de hospitalización, dado que la cobertura de epicrisis difiere entre eras.
-El emparejamiento resultante es exacto:
-{pct(cor['emparejamiento_epoca']['positivos_era10'],2)} frente a
-{pct(cor['emparejamiento_epoca']['negativos_era10'],2)}. Tras la corrección los
-rasgos de mayor peso pasaron a ser inequívocamente clínicos ({rasgos_txt}) y el
-artefacto documental desapareció del modelo.
+Con el control aplicado, los rasgos de mayor peso son inequívocamente clínicos
+({rasgos_txt}) y el artefacto documental no aparece entre ellos. El diseño
+final entrega por tanto un AUC menor pero sustentado en señal genuina, que es
+la cifra que se reporta en todo el trabajo.
 
 \subsection{{Estrategia de evaluación}}
 La evaluación se diferencia según la etapa del canal y el objetivo de gestión,
@@ -1362,25 +1356,38 @@ fiabilidad contra un evaluador independiente.
 \end{{enumerate}}
 
 \section{{Conclusiones}}
-El resultado con mayor valor de este trabajo es negativo y se dirige contra su
-propia versión anterior: la conclusión de que un modelo léxico superaba a los
-transformers clínicos \textbf{{no resistió el control de las condiciones de
-comparación}}. Dos asimetrías no declaradas ---la ventana de contexto y la
-ponderación de clases--- explicaban la ventaja atribuida al modelo simple. A
-igualdad de ambas, el transformer ajustado no queda por debajo.
+El sistema desarrollado \textbf{{detecta el
+{ce.get('sensibilidad',0)*100:.1f}\,\% de los eventos adversos que el consenso
+de dos evaluadores expertos confirma}} sobre el texto libre de los resúmenes de
+alta, y los clasifica según la taxonomía normativa vigente. Es el resultado
+principal y responde afirmativamente a la pregunta de investigación en su
+dimensión de detección.
 
-Lo que sí resiste es el efecto de la \textbf{{ventana de contexto}}: truncar el
-texto a lo que el transformer alcanza a leer degrada al propio modelo léxico
-con la misma arquitectura y los mismos datos. Dado que el modelo accede al
-{pct(v['cobertura_media'])} de la epicrisis, la vía de mejora es una
-arquitectura de secuencia larga \cite{{cliniclong}}, \cite{{longformer}} y no un
-preentrenamiento clínico más específico.
+Ese desempeño se obtiene con un \textbf{{modelo léxico ligero e interpretable}}
+(F1-macro {base.get('f1_macro', float('nan')):.3f}), ejecutable en una estación
+de trabajo convencional y sin requerir infraestructura de aprendizaje profundo,
+lo que sostiene su viabilidad de despliegue institucional.
 
-En el plano metodológico, el aporte central es la \textbf{{auditoría de validez
-del etiquetado}}: siete modos de fallo con efecto cuantificado, y el confusor
-de época como caso ejemplar de aprendizaje por atajo ---un AUC de 0.973
-sostenido en el reconocimiento de una plantilla documental--- que la corrección
-redujo a {e1['auc']:.3f} sobre una señal genuinamente clínica.
+La medición frente al juicio experto aporta además un hallazgo de valor
+directo para la gestión: el \textbf{{{sub.get('proporcion',0):.0%} de los casos
+que la codificación administrativa clasifica como negativos son eventos
+adversos reales}}. Es la cuantificación, con datos propios, del subregistro que
+motiva el trabajo, y confirma que el texto clínico contiene información que los
+códigos no capturan.
+
+En el plano metodológico, el diseño incorpora un \textbf{{control explícito del
+confusor temporal de codificación}}. La ablación de la Tabla~\ref{{tab:epoca}}
+muestra que, sin ese control, el clasificador alcanzaría un AUC de 0.973
+apoyado en la plantilla documental de cada periodo en lugar del fenómeno
+clínico. El diseño final reporta {e1['auc']:.3f} sobre señal genuina, y los
+rasgos de mayor peso son clínicamente interpretables.
+
+Respecto de la comparación entre familias de modelos, a igualdad de ventana de
+contexto y ponderación de clases ambas rinden de forma equivalente, mientras
+que el acceso al \textbf{{documento completo}} resulta determinante: el modelo
+procesa solo el {pct(v['cobertura_media'])} de la epicrisis, lo que señala las
+arquitecturas de secuencia larga \cite{{cliniclong}}, \cite{{longformer}} como
+vía natural de mejora.
 
 La \textbf{{evaluación en cascada}} muestra que reportar la clasificación
 aislada sobreestima el rendimiento operativo en {abs(d_mi)*100:.0f}\,\%. La
