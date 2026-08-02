@@ -495,6 +495,16 @@ ponderación resulta decisiva para el transformer: sin ella su F1-macro cae a
 al tratamiento del desbalance. La conclusión de que «el modelo simple gana»
 era, en esa parte, un artefacto del protocolo.
 
+Dos precisiones evitan sobreinterpretar este resultado. Primera: \textbf{el
+mejor modelo del estudio sigue siendo el léxico con acceso al texto completo}
+(Tabla~\ref{tab:modelos}); la reversión afecta a la comparación \emph{a
+igualdad de ventana}, no al ranking global. Segunda: la ventaja del
+transformer en esas condiciones es de 0.024
+puntos de F1-macro, estimada sobre una única partición y sin intervalos de
+confianza ni prueba de significación. Lo que el dato sostiene es que la
+diferencia \textbf{no favorece al modelo léxico}, no que el transformer sea
+superior.
+
 \subsubsection{La ventana de contexto sí explica la diferencia real}
 \label{sec:ventana}
 La arquitectura BERT \cite{bert}, \cite{vaswani} limita la entrada a un
@@ -650,6 +660,35 @@ textual y codificaron, una a una, el tipo de evento, la naturaleza según el
 Anexo 02 y la severidad según el Anexo 03. Es un \emph{estándar de oro}: juicio
 humano especializado, en el idioma y bajo la norma de destino del sistema.
 
+\subsection{Procedencia y tratamiento de los datos}
+El corpus procede del sistema institucional de reporte de eventos adversos y
+fue facilitado por el investigador principal en su condición de profesional de
+la institución, en formato agregado y sin identificadores en las columnas. Su
+uso en este trabajo es exclusivamente académico.
+
+La codificación de referencia la realizaron dos profesionales con formación en
+gestión de la calidad y seguridad del paciente, cuya cualificación se detalla
+en el anexo de colaboradores. Debe señalarse una limitación: 	extbf{no se
+dispone de una medida de fiabilidad entre codificadores para este corpus}, de
+modo que su condición de estándar de oro descansa en la cualificación de
+quienes lo codificaron y no en un coeficiente de concordancia medido. Es una
+diferencia relevante respecto del corpus MIMIC, donde sí se estimó el acuerdo
+inter-observador.
+
+\subsection{Procedencia de los datos y cualificación de los codificadores}
+El corpus procede del sistema institucional de reporte de eventos adversos,
+facilitado por el investigador principal en su condición de profesional de la
+institución, en formato agregado y sin identificadores en las columnas. Su uso
+en este trabajo es exclusivamente académico.
+
+La codificación de referencia la realizaron dos profesionales con formación en
+gestión de la calidad y seguridad del paciente. Debe señalarse, no obstante,
+una limitación: \textbf{no se dispone de una medida de fiabilidad entre
+codificadores para este corpus}. Su condición de estándar de oro descansa por
+tanto en la cualificación de quienes lo codificaron y no en un coeficiente de
+concordancia medido, a diferencia del corpus MIMIC, donde sí se estimó el
+acuerdo inter-observador.
+
 \subsection{Preprocesamiento}
 El texto libre exigió tres correcciones antes de modelar:
 \begin{itemize}
@@ -684,9 +723,9 @@ El corpus permite tres tareas que el corpus MIMIC no puede sostener
 \toprule
 \textbf{Tarea} & \textbf{$n$} & \textbf{Cl.} & \textbf{Modelo} & \textbf{F1-mac.} & \textbf{F1-mic.} \\
 \midrule
-Binaria & 6,334 & 2 & LogReg & \textbf{0.860} & 0.864 \\
-Naturaleza & 6,276 & 9 & LinearSVC & \textbf{0.767} & 0.845 \\
-Severidad & 6,279 & 4 & LogReg & \textbf{0.606} & 0.725 \\
+Binaria & 6,334 & 2 & LogReg & 	extbf{0.860} & 0.864 \\
+Naturaleza & 6,276 & 9 & LinearSVC & 	extbf{0.767} & 0.845 \\
+Severidad & 6,279 & 4 & LogReg & 	extbf{0.606} & 0.725 \\
 \bottomrule
 \end{tabular}
 \end{table}

@@ -63,356 +63,58 @@ def rango(m):
 
 
 # ---------------------------------------------------------------- documento
-doc = []
-A = doc.append
-
-A("# Detección automática de eventos adversos hospitalarios en epicrisis "
-  "mediante Procesamiento de Lenguaje Natural")
-A("")
-A("**Curso:** MIA-10 — Procesamiento del Lenguaje Natural  ")
-A("**Maestría en Inteligencia Artificial — Universidad Nacional de Ingeniería**  ")
-A("**Docente:** Dr. Wester Zela Moraya  ")
-A("**Autor:** Mg. Carlos Pérez Pérez (trabajo individual)")
-A("")
-A(f"*Documento generado automáticamente desde los resultados del pipeline el "
-  f"{datetime.now():%d/%m/%Y}. Las cifras no se transcriben a mano: se leen "
-  f"de los archivos de resultados del proyecto, de modo que este informe y la "
-  f"tesis no puedan divergir.*")
-A("")
-A("---")
-A("")
-
-# ------------------------------------------------------------------- 1
-A("## 1. Del planteamiento a la ejecución")
-A("")
-A("La propuesta presentada en mayo de 2026 comprometía cuatro cosas: construir "
-  "el corpus por supervisión débil con detección de negaciones, comparar un "
-  "modelo léxico contra transformers clínicos, mapear los eventos a la "
-  "taxonomía del Anexo 02 de la Directiva GG-ESSALUD-2021, y validar el "
-  "resultado con un segundo evaluador independiente mediante el coeficiente "
-  "kappa de Cohen. **Las cuatro se ejecutaron.** Este informe reporta lo "
-  "obtenido, incluidos los resultados que refutaron las hipótesis iniciales.")
-A("")
-
-# ------------------------------------------------------------------- 2
-A("## 2. Corpus")
-A("")
-A(f"- Fuente: **MIMIC-IV-Note v2.2** (PhysioNet), 331,793 epicrisis en inglés.")
-A(f"- Corpus de modelado: **{cor['epicrisis']:,} epicrisis** "
-  f"({cor['positivas']:,} positivas), techo impuesto por memoria al vectorizar "
-  f"n-gramas de carácter.")
-A(f"- Prevalencia poblacional del evento: **{cor['prevalencia_real']:.2%}** "
-  f"({cor['universo_positivo']:,} hospitalizaciones con evento codificado).")
-A(f"- Partición por **paciente** (`GroupShuffleSplit` sobre `subject_id`), con "
-  f"verificación explícita de que ningún paciente aparece en entrenamiento y "
-  f"prueba a la vez.")
-A("")
-A("### 2.1 Auditoría del pipeline: siete defectos corregidos")
-A("")
-A("El hallazgo metodológico central del trabajo no es una métrica sino una "
-  "auditoría. Siete defectos alteraban los resultados; se documentan con su "
-  "efecto medido porque son reproducibles y generalizables a cualquier "
-  "proyecto de PLN clínico con supervisión débil.")
-A("")
-A("| # | Defecto | Efecto medido |")
-A("|---|---|---|")
-A("| 1 | Muestreo no declarado: se examinaba solo el 9% del corpus | 301,793 epicrisis sin revisar |")
-A("| 2 | `re.DOTALL` hacía que el comodín cruzara la epicrisis completa | −63.7% de detecciones (258,671 → 93,922) |")
-A("| 3 | Códigos CIE-10 con punto frente a MIMIC sin punto | Corpus positivo ×267 (411 → 109,714) |")
-A("| 4 | Ausencia de clase negativa | Abstención ante texto trivial: 6/6 |")
-A("| 5 | **Confusor de época CIE-9/CIE-10** | Ver §2.2 — el más grave |")
-A("| 6 | 43 de 223 códigos eran reglas muertas (CIE-10 OMS ≠ CIE-10-CM) | Medicación ×68 (209 → 14,295) |")
-A("| 7 | Percentiles degenerados con n pequeño en la matriz de priorización | Inversión de prioridad |")
-A("")
-A("**Evidencia decisiva del defecto 2.** Los patrones que contenían `.*` "
-  "cayeron −84.1% al acotar el alcance (42,330 → 6,735), mientras que los "
-  "patrones sin comodín quedaron **idénticos** (13,189 → 13,189). Esto prueba "
-  "que la pérdida provenía del alcance del comodín y no de la especificidad "
-  "de los patrones.")
-A("")
-A("### 2.2 El confusor de época: aprendizaje por atajo")
-A("")
-A("El mapeo inicial contenía solo códigos CIE-10. Como MIMIC-IV abarca "
-  "2008-2019, toda hospitalización de la era CIE-9 resultaba negativa **por "
-  "construcción**: los negativos eran 78.97% era CIE-9 y los positivos 100% "
-  "era CIE-10.")
-A("")
-A("El clasificador no aprendió a reconocer eventos adversos, sino **la "
-  "plantilla de laboratorio de cada época**. El rasgo de mayor peso era "
-  "`palabra__rdwsd`, un artefacto de cabecera sin contenido clínico. Es un "
-  "caso de manual de *shortcut learning*: métricas altas sobre una señal "
-  "espuria.")
-A("")
-A("| Versión | Especificidad | AUC | VPP |")
-A("|---|---|---|---|")
-A("| Inicial (**inválida, no se cita**) | 0.917 | 0.973 | 0.433 |")
-A("| Reevaluada con emparejamiento | 0.694 | 0.904 | 0.171 |")
-A(f"| **Final, tras corregir los siete defectos** | **{e1['especificidad']:.3f}** "
-  f"| **{e1['auc']:.3f}** | **{e1['vpp_prevalencia_real']:.3f}** |")
-A("")
-A("**Corrección aplicada:** se extendió el mapeo a CIE-9 (996-999≈T80-T88, "
-  "E870-E879≈Y60-Y69, E930-E949≈Y40-Y59, 707.0x≈L89) y se forzó el "
-  "emparejamiento **a nivel de nota**, no de hospitalización, porque la "
-  "cobertura de epicrisis difiere entre eras. Resultado del emparejamiento: "
-  f"{cor['emparejamiento_epoca']['positivos_era10']:.2%} frente a "
-  f"{cor['emparejamiento_epoca']['negativos_era10']:.2%} — exacto.")
-A("")
-A("Tras la corrección, los rasgos de mayor peso pasaron a ser clínicos: "
-  + ", ".join("*%s*" % str(r[0]).replace("palabra__", "")
-              for r in e1.get("rasgos_top", [])[:8]) + ". El "
-  "artefacto desapareció.")
-A("")
-
-# ------------------------------------------------------------------- 3
-A("## 3. Resultados")
-A("")
-A("### 3.1 Etapa 1 — detección binaria")
-A("")
-A("Vectorización TF-IDF (palabra + carácter) con LinearSVC balanceado. "
-  "Intervalos por **bootstrap agrupado por paciente**: el remuestreo de notas "
-  "sueltas viola la independencia, porque un mismo paciente aporta varias "
-  "notas al conjunto de prueba.")
-A("")
-A("| Métrica | Valor | IC 95% |")
-A("|---|---|---|")
-A(f"| Sensibilidad | {e1['sensibilidad']:.3f} | {rango('sensibilidad')} |")
-A(f"| Especificidad | {e1['especificidad']:.3f} | {rango('especificidad')} |")
-A(f"| AUC | {e1['auc']:.3f} | {rango('AUC')} |")
-A(f"| VPP a prevalencia real ({cor['prevalencia_real']:.2%}) | "
-  f"**{e1['vpp_prevalencia_real']:.3f}** | — |")
-A("")
-A("El conjunto de prueba está balanceado, por lo que su VPP bruto (0.793) "
-  "sobreestima el operativo. Se reporta el **VPP reajustado a la prevalencia "
-  "poblacional**, que es la cifra con la que un servicio de calidad "
-  "trabajaría en la práctica.")
-A("")
-A(f"**Abstención:** ante seis textos triviales o sin contenido clínico "
-  f"(cadenas vacías, «ok», altas rutinarias sin complicación) el detector se "
-  f"abstuvo en **{sum(1 for a in e1['abstencion'] if not a['detecta'])}/"
-  f"{len(e1['abstencion'])}** casos.")
-A("")
-A("### 3.2 Etapa 2 — naturaleza del evento y evaluación en cascada")
-A("")
-A("La Etapa 2 clasifica la naturaleza del evento (taxonomía del Anexo 02) "
-  "sobre las notas positivas. Evaluarla sobre positivos **de referencia** "
-  "supone un detector perfecto y sobreestima el rendimiento real, de modo que "
-  "se reporta también la **cascada** completa texto → detección → naturaleza.")
-A("")
-A("| Evaluación | F1-micro | F1-macro |")
-A("|---|---|---|")
-A(f"| Etapa 2 aislada (positivos de referencia) | "
-  f"{cas['etapa2_aislada']['f1_micro']:.3f} | "
-  f"{cas['etapa2_aislada']['f1_macro']:.3f} |")
-A(f"| **Cascada extremo a extremo** | **{cas['cascada']['f1_micro']:.3f}** | "
-  f"**{cas['cascada']['f1_macro']:.3f}** |")
-A("")
-d_mi = cas["cascada"]["f1_micro"] / cas["etapa2_aislada"]["f1_micro"] - 1
-A(f"La caída es de **{d_mi:.1%}** en F1-micro. Se calculó sobre las "
-  f"{cas['n_notas_limpias']:,} notas ({cas['pct_test']:.1%} del test) cuyos "
-  f"pacientes no fueron vistos por **ninguna** de las dos etapas: como cada "
-  f"etapa se particionó por separado, evaluar la cascada sobre todo el "
-  f"conjunto de prueba habría constituido fuga de información.")
-A("")
-A("### 3.3 Comparación con transformers clínicos: hipótesis refutada")
-A("")
-A("| Modelo | Exactitud | F1-macro | Kappa |")
-A("|---|---|---|---|")
-A("| TF-IDF + Regresión Logística | 0.628 | 0.466 | 0.474 |")
-A("| **TF-IDF + LinearSVC (palabra + carácter)** | **0.731** | **0.515** | **0.581** |")
-A("| Bio_ClinicalBERT congelado + Regresión Logística | 0.38 | 0.19 | 0.18 |")
-A("")
-A("La hipótesis de partida —que un modelo de lenguaje clínico preentrenado "
-  "superaría al enfoque léxico— **se refutó**. Bio_ClinicalBERT usado como "
-  "extractor de rasgos congelado quedó muy por debajo. La interpretación es "
-  "que la tarea está definida por patrones léxicos explícitos derivados de "
-  "una regla de etiquetado, no por relaciones semánticas profundas: el "
-  "transformer sin *fine-tuning* no aporta a un problema así, y su ventaja "
-  "esperada requeriría ajuste completo sobre GPU, fuera del alcance del curso.")
-A("")
-A("> ⚠️ **Vigencia:** estas tres cifras provienen de la comparación de mayo, "
-  "anterior a la corrección del defecto 6, que afectó al reparto de clases "
-  "(Medicación estaba 68 veces subrepresentada). El **orden relativo entre "
-  "modelos se mantiene** —es el hallazgo que se defiende—, pero los valores "
-  "absolutos no son comparables con los de §3.2.")
-A("")
-
-# ------------------------------------------------------------------- 4
-if kap and kap.get("n_comunes"):
-    p = kap["principal_3clases"]
-    b = kap["binario"]
-    A("## 4. Validación con evaluador independiente (lo comprometido en la propuesta)")
-    A("")
-    A("La propuesta comprometía «un segundo evaluador independiente sobre una "
-      "submuestra, midiendo la concordancia con el coeficiente kappa de Cohen». "
-      "Se ejecutó sobre una muestra ciega estratificada, con interfaz que oculta "
-      "el veredicto del sistema, el código diagnóstico de origen y el estrato.")
-    A("")
-    A(f"| Estadístico | Valor |")
-    A("|---|---|")
-    A(f"| Casos doble-anotados | {kap['n_comunes']} |")
-    A(f"| Acuerdo observado | {p['po']:.3f} |")
-    A(f"| **Kappa de Cohen** | **{p['puntual']:.3f}** "
-      f"IC95 [{p['ic_bajo']:.3f}–{p['ic_alto']:.3f}] |")
-    A(f"| PABAK | {p['pabak']:.3f} |")
-    A(f"| McNemar (sesgo entre anotadores) | p = {b['mcnemar_p']:.2f} |")
-    A("")
-    A(f"El kappa puntual se sitúa en la banda **sustancial** de Landis y Koch "
-      f"(≥0.61). El límite inferior del intervalo queda por debajo del umbral, "
-      f"consecuencia del tamaño muestral, por lo que la afirmación se enuncia "
-      f"con esa reserva. El índice de prevalencia es "
-      f"{b['indice_prevalencia']:.3f}: con clases tan desbalanceadas el kappa "
-      f"se deprime (paradoja de Feinstein-Cicchetti), y por eso se reporta "
-      f"junto al **PABAK ({p['pabak']:.3f})** y al acuerdo observado. La prueba "
-      f"de McNemar no detecta sesgo sistemático entre evaluadores.")
-    A("")
-
-# ------------------------------------------------------------------- 5
-if oe5:
-    A("## 5. Transferencia al español con etiqueta de oro")
-    A("")
-    li = oe5["limpieza"]
-    A(f"Las etiquetas de MIMIC derivan de códigos administrativos: son un "
-      f"**estándar de plata**. Para contrastar contra criterio humano se empleó "
-      f"un corpus en español de {li['filas_originales']:,} ocurrencias "
-      f"codificadas por profesionales expertos contra los Anexos 02 y 03 de la "
-      f"normativa: **estándar de oro**.")
-    A("")
-    A(f"Preprocesamiento: anonimización de identificadores en el texto libre "
-      f"({li['dni_anonimizados']} secuencias), descarte de {li['textos_cortos']} "
-      f"textos sin contenido suficiente y deduplicación exacta hasta "
-      f"{li['filas_unicas']:,} registros únicos — sin este último paso el mismo "
-      f"texto aparecía en entrenamiento y prueba.")
-    A("")
-    A("| Tarea | Clases | F1-macro | F1-micro |")
-    A("|---|---|---|---|")
-    for nom, t in oe5["tareas"].items():
-        mejor = max((k for k in t["resultados"] if k != "por_clase"),
-                    key=lambda k: t["resultados"][k]["f1_macro"])
-        r = t["resultados"][mejor]
-        etiq = nom.split("_", 1)[1].replace("_", " ")
-        A(f"| {etiq} ({t['n']:,} casos) | {t['clases']} | "
-          f"**{r['f1_macro']:.3f}** | {r['f1_micro']:.3f} |")
-    A("")
-    A("> **Advertencia de comparabilidad.** Estas cifras **no** son comparables "
-      "con las de §3.2. El texto en español son descripciones de ~120 "
-      "caracteres redactadas por quien **ya identificó** el evento; la epicrisis "
-      "son ~17,500 caracteres donde el evento hay que **encontrarlo**. La tarea "
-      "es más fácil por construcción. Lo que demuestran es que la taxonomía "
-      "nacional es aprendible con etiqueta humana, y que clases inviables en "
-      "MIMIC por escasez de ejemplos sí son modelables en el corpus en español.")
-    A("")
-
-# ------------------------------------------------------------------- 6
-A("## 6. Limitaciones")
-A("")
-A("1. **Estándar de plata.** Las métricas sobre MIMIC miden acuerdo con "
-  "etiquetas derivadas de códigos CIE, no con juicio clínico. Un falso "
-  "positivo puede ser una detección correcta de un evento no codificado.")
-A("2. **Reutilización del conjunto de prueba.** La misma partición "
-  "(semilla 42) se evaluó a lo largo de las sucesivas iteraciones del "
-  "pipeline, lo que introduce un sesgo optimista no cuantificado. El umbral "
-  "de decisión no se ajustó: se mantuvo el valor por defecto.")
-A("3. **Alcance de la validación experta.** La muestra de revisión está "
-  "restringida a eventos de infección, por lo que el kappa y el VPP corregido "
-  "se enuncian sobre ese subconjunto, no sobre el pipeline completo.")
-A("4. **Cobertura de datos estructurados.** Las tablas de UCI cubren solo el "
-  "19.7% de las epicrisis, lo que limita cualquier regla basada en signos "
-  "vitales.")
-A("5. **Independencia del anotador.** El investigador principal es a la vez "
-  "desarrollador del modelo y anotador de referencia. Se mitiga con interfaz "
-  "ciega, orden aleatorio, registro automático del tiempo por caso y "
-  "estimación de la fiabilidad contra un segundo anotador independiente.")
-A("")
-
-# ------------------------------------------------------------------- 7
-A("## 7. Conclusiones")
-A("")
-A("1. La conclusión previa de que el modelo léxico superaba al transformer "
-  "clínico **no se sostuvo** al controlar la ventana de contexto y la "
-  "ponderación de clases: a igualdad de condiciones el transformer ajustado "
-  "no queda por debajo. La ventaja observada procedía del protocolo, no del "
-  "modelo.")
-A("2. El aporte metodológico principal es la **auditoría de siete defectos**, "
-  "con el confusor de época como caso ejemplar de aprendizaje por atajo: un "
-  "modelo puede alcanzar AUC 0.973 aprendiendo la plantilla de laboratorio de "
-  "una época en lugar del fenómeno clínico.")
-A("3. La **evaluación en cascada** muestra que reportar la clasificación "
-  f"aislada sobreestima el rendimiento operativo en {abs(d_mi):.0%}.")
-A("4. La validación con un evaluador independiente sitúa la concordancia en "
-  "la banda sustancial, con la reserva del tamaño muestral.")
-A("5. El corpus en español con etiqueta de oro abre la transferencia del "
-  "sistema a la taxonomía nacional, que es el destino aplicado del trabajo.")
-A("")
-A("---")
-A("")
-A("**Repositorio del curso:** https://github.com/carlosperez100/PLN_SP  ")
-A("**Reporte en línea:** https://carlosperez100.github.io/PLN_SP/")
-A("")
-A(f"*Cifras leídas de: `resultados_finales.json` ({f9['generado'][:10]}), "
-  f"`metricas_corregidas.json`, `concordancia.json`, `informe_oe5.json`. "
-  f"Regenerar con `python generar_entregable_pln.py`.*")
-
-destino = OUT / "ENTREGABLE_FINAL_PLN.md"
-destino.write_text("\n".join(doc), encoding="utf-8")
-print(f"[OK] {destino}")
-print(f"     {len(doc)} bloques · {sum(len(x) for x in doc):,} caracteres")
-
-
-# ===========================================================================
-#  SALIDA LaTeX — mismo contenido, formato IEEE conference (paper del curso)
-#  Las cifras salen de las MISMAS variables: el .tex y el .md no pueden
-#  divergir entre sí ni respecto de la tesis.
-# ===========================================================================
 def pct(x, d=1):
-    """Porcentaje con el % escapado para LaTeX."""
+    """Porcentaje con el signo % ESCAPADO para LaTeX. Usarla siempre: un `%`
+    sin escapar comenta el resto de la linea y borra texto del PDF."""
     return f"{x*100:.{d}f}\\%"
 
 
 n_abs = sum(1 for a in e1["abstencion"] if not a["detecta"])
-p = kap["principal_3clases"] if kap else None
-bn = kap["binario"] if kap else None
-nat = (kap or {}).get("naturaleza", {})   # puede faltar si n<10
-
-# --- Fase 12: sistema contra el consenso de los evaluadores ----------------
-if f12:
-    ce = f12["contra_experto"]
-    pe = f12.get("por_evaluador", {})
-    sub = f12.get("subregistro_codigos") or {}
-    filas_rob = chr(10).join(
-        f"{k} & {v['n']} & {v['sensibilidad']:.3f} & "
-        f"{v['especificidad']:.3f} & {v['kappa']:.3f} \\\\"
-        for k, v in pe.items())
-else:
-    ce, pe, sub, filas_rob = {}, {}, {}, ""
+d_mi = cas["cascada"]["f1_micro"] / cas["etapa2_aislada"]["f1_micro"] - 1
+li = (oe5 or {}).get("limpieza", {})
 
 
-# Los rasgos se LEEN del modelo, no se transcriben: la lista escrita a mano
-# citaba «rejection», que no figura entre los de mayor peso (auditoría 31-jul).
+def esc(x):
+    """Escapa para LaTeX y normaliza etiquetas en mayusculas."""
+    x = str(x).replace("&", "\&").replace("_", "\_").replace("%", "\%")
+    return x.capitalize() if x.isupper() else x
+
+
+filas_oe5, tablas_clase = [], {}
+for nom, t in (oe5 or {}).get("tareas", {}).items():
+    mejor = max((k for k in t["resultados"] if k != "por_clase"),
+                key=lambda k: t["resultados"][k]["f1_macro"])
+    r = t["resultados"][mejor]
+    etiq = nom.split("_", 1)[1].replace("_", " ").capitalize()
+    filas_oe5.append(f"{etiq} & {t['n']:,} & {t['clases']} & {mejor} & "
+                     f"\textbf{{{r['f1_macro']:.3f}}} & {r['f1_micro']:.3f} \\\\")
+    pc_ = t["resultados"].get("por_clase", {})
+    tablas_clase[nom] = chr(10).join(
+        f"{esc(c)} & {v['n']} & {v['f1']:.3f} \\\\"
+        for c, v in sorted(pc_.items(), key=lambda x: -x[1]["n"]))
+p = kap["principal_3clases"] if kap else {}
+bn = kap["binario"] if kap else {}
+
+# --- Fase 12: sistema contra el consenso de los dos evaluadores ------------
+nat = (kap or {}).get("naturaleza", {})          # puede faltar si n<10
+ce = (f12 or {}).get("contra_experto", {})
+pe = (f12 or {}).get("por_evaluador", {})
+sub = (f12 or {}).get("subregistro_codigos") or {}
+filas_rob = chr(10).join(
+    f"{k} & {v['n']} & {v['sensibilidad']:.3f} & "
+    f"{v['especificidad']:.3f} & {v['kappa']:.3f} \\\\"
+    for k, v in pe.items())
+
+# Los rasgos se LEEN del modelo, no se transcriben (auditoria 31-jul).
 _rt = e1.get("rasgos_top", [])[:8]
 rasgos_txt = ", ".join(
     "\\emph{%s}" % str(r[0]).replace("palabra__", "").replace("_", r"\_")
     for r in _rt) or "(no disponibles)"
-li = oe5["limpieza"] if oe5 else None
-
-def esc(s):
-    """Escapa para LaTeX y normaliza mayúsculas de las etiquetas."""
-    s = str(s).replace("&", "\\&").replace("_", "\\_").replace("%", "\\%")
-    return s.capitalize() if s.isupper() else s
 
 
-filas_oe5, tablas_clase = [], {}
-if oe5:
-    for nom, t in oe5["tareas"].items():
-        mejor = max((k for k in t["resultados"] if k != "por_clase"),
-                    key=lambda k: t["resultados"][k]["f1_macro"])
-        r = t["resultados"][mejor]
-        etiq = nom.split("_", 1)[1].replace("_", " ").capitalize()
-        filas_oe5.append(f"{etiq} & {t['n']:,} & {t['clases']} & {mejor} & "
-                         f"\\textbf{{{r['f1_macro']:.3f}}} & {r['f1_micro']:.3f} \\\\")
-        pc = t["resultados"].get("por_clase", {})
-        tablas_clase[nom] = "\n".join(
-            f"{esc(c)} & {v['n']} & {v['f1']:.3f} \\\\"
-            for c, v in sorted(pc.items(), key=lambda x: -x[1]["n"]))
+# El informe en Markdown se elimino: duplicaba el paper y se desincronizaba
+# (mantenia «hipotesis refutada» cuando el .tex ya decia lo contrario, y un
+# signo invertido en la caida de la cascada). El entregable es el .tex/.pdf.
 
 # --- sección de transformers: usa el fine-tuning si ya está disponible ------
 if f11 and f11.get("resultados"):
@@ -432,9 +134,14 @@ if f11 and f11.get("resultados"):
     # comparación emparejada: todos SIN balanceo, que es como entrenó BERT
     _, base = buscar("TF-IDF", "sin balanceo", "completo")
     _, trun = buscar("TF-IDF", "sin balanceo", "truncado")
-    if not base:                       # respaldo si aún no se corrió 11b
+    if not (base and trun):            # respaldo si aún no se corrió 11b
         _, base = buscar("TF-IDF", "completo", sin=("sin balanceo",))
         _, trun = buscar("TF-IDF", "truncado", sin=("sin balanceo",))
+    if not (base and trun):
+        # Antes se publicaba «cae de 0.000 a 0.000 (0.0%)» en silencio.
+        raise SystemExit("[!] faltan las variantes completo/truncado en "
+                         f"fase11; el paper no puede reportar el efecto de la "
+                         f"ventana. Claves: {list(R)}")
     caida = base.get("f1_macro", 0) - trun.get("f1_macro", 0)
     caida_rel = caida / base["f1_macro"] if base.get("f1_macro") else 0
 
@@ -508,6 +215,16 @@ ponderación resulta decisiva para el transformer: sin ella su F1-macro cae a
 {f1_bert_sin:.3f}, una diferencia del {pct(mejora_pond, 0)} atribuible únicamente
 al tratamiento del desbalance. La conclusión de que «el modelo simple gana»
 era, en esa parte, un artefacto del protocolo.
+
+Dos precisiones evitan sobreinterpretar este resultado. Primera: \textbf{{el
+mejor modelo del estudio sigue siendo el léxico con acceso al texto completo}}
+(Tabla~\ref{{tab:modelos}}); la reversión afecta a la comparación \emph{{a
+igualdad de ventana}}, no al ranking global. Segunda: la ventaja del
+transformer en esas condiciones es de {f1_bert_pond - f1_tfidf_trunc:.3f}
+puntos de F1-macro, estimada sobre una única partición y sin intervalos de
+confianza ni prueba de significación. Lo que el dato sostiene es que la
+diferencia \textbf{{no favorece al modelo léxico}}, no que el transformer sea
+superior.
 
 \subsubsection{{La ventana de contexto sí explica la diferencia real}}
 \label{{sec:ventana}}
@@ -1128,6 +845,35 @@ calidad, seguridad del paciente y auditoría médica--- leyeron la descripción
 textual y codificaron, una a una, el tipo de evento, la naturaleza según el
 Anexo 02 y la severidad según el Anexo 03. Es un \emph{{estándar de oro}}: juicio
 humano especializado, en el idioma y bajo la norma de destino del sistema.
+
+\subsection{{Procedencia y tratamiento de los datos}}
+El corpus procede del sistema institucional de reporte de eventos adversos y
+fue facilitado por el investigador principal en su condición de profesional de
+la institución, en formato agregado y sin identificadores en las columnas. Su
+uso en este trabajo es exclusivamente académico.
+
+La codificación de referencia la realizaron dos profesionales con formación en
+gestión de la calidad y seguridad del paciente, cuya cualificación se detalla
+en el anexo de colaboradores. Debe señalarse una limitación: 	extbf{{no se
+dispone de una medida de fiabilidad entre codificadores para este corpus}}, de
+modo que su condición de estándar de oro descansa en la cualificación de
+quienes lo codificaron y no en un coeficiente de concordancia medido. Es una
+diferencia relevante respecto del corpus MIMIC, donde sí se estimó el acuerdo
+inter-observador.
+
+\subsection{{Procedencia de los datos y cualificación de los codificadores}}
+El corpus procede del sistema institucional de reporte de eventos adversos,
+facilitado por el investigador principal en su condición de profesional de la
+institución, en formato agregado y sin identificadores en las columnas. Su uso
+en este trabajo es exclusivamente académico.
+
+La codificación de referencia la realizaron dos profesionales con formación en
+gestión de la calidad y seguridad del paciente. Debe señalarse, no obstante,
+una limitación: \textbf{{no se dispone de una medida de fiabilidad entre
+codificadores para este corpus}}. Su condición de estándar de oro descansa por
+tanto en la cualificación de quienes lo codificaron y no en un coeficiente de
+concordancia medido, a diferencia del corpus MIMIC, donde sí se estimó el
+acuerdo inter-observador.
 
 \subsection{{Preprocesamiento}}
 El texto libre exigió tres correcciones antes de modelar:
