@@ -171,7 +171,30 @@ mayoritariamente anglosajonas, mientras que la aplicación institucional exige
 la taxonomía normativa local \cite{directiva02}, \cite{directiva7}, sobre la
 que casi no existen corpus etiquetados.
 
-\section{Problemática}
+\subsection{Vinculación de los estudios previos con el trabajo actual}
+Del análisis de los antecedentes, el presente estudio se vincula con la
+literatura existente en tres dimensiones:
+
+\begin{enumerate}
+\item \textbf{Detección automática sobre texto clínico libre.} Al igual que
+Murff \emph{et al.} \cite{murff}, el sistema propuesto opera sobre notas
+redactadas por el clínico y no sobre codificación administrativa,
+aprovechando que el texto contiene información que los códigos no capturan.
+\item \textbf{Supervisión débil frente a anotación manual.} A diferencia de
+los estudios que validan contra revisión exhaustiva de historias
+\cite{brennan}, \cite{classen}, este trabajo construye la etiqueta de forma
+programática \cite{snorkel} y reserva el juicio experto para la validación,
+lo que permite escalar a cientos de miles de documentos.
+\item \textbf{Taxonomía normativa local y escenario acotado.} Mientras la
+literatura emplea mayoritariamente taxonomías anglosajonas, el presente estudio
+se ancla a la normativa institucional peruana \cite{directiva02},
+\cite{directiva7}, y añade una auditoría explícita de la validez de su propia
+etiqueta, aspecto que los trabajos revisados no abordan.
+\end{enumerate}
+
+\section{Planteamiento del problema}
+
+\subsection{Descripción de la realidad problemática}
 La notificación de eventos adversos en EsSalud opera de forma reactiva: depende
 de que un profesional decida reportar, tras el hecho y de manera voluntaria. La
 consecuencia medible es un subregistro cercano al 72\,\%, equivalente a unos
@@ -182,21 +205,126 @@ sancionatoria.
 
 El obstáculo no es la ausencia de información, sino su formato. La descripción
 de lo ocurrido existe en las epicrisis, redactada en texto libre, pero no en
-una forma explotable de manera automática. De ahí la pregunta de investigación:
+una forma explotable de manera automática.
 
-\begin{quote}
-\emph{¿Es posible detectar automáticamente, a partir del texto libre de los
-resúmenes de alta, los eventos adversos ocurridos durante la hospitalización, y
-clasificarlos según la taxonomía normativa vigente, con una fiabilidad
-comparable a la del juicio experto?}
-\end{quote}
+\subsection{Definición y caracterización del problema}
+Metodológicamente, el trabajo aborda un \textbf{problema de clasificación
+supervisada} sobre texto clínico. El objeto de estudio se define mediante las
+siguientes variables:
 
-Responderla exige resolver tres problemas encadenados: construir una etiqueta
-de referencia sin anotación manual exhaustiva, verificar que el modelo aprende
-el fenómeno clínico y no un artefacto documental, y demostrar que el criterio
-aplicado es reproducible por un evaluador independiente.
+\begin{itemize}
+\item \textbf{Variable independiente ($X$):} representación vectorial del
+texto libre de la epicrisis, obtenida mediante ponderación TF-IDF de $n$-gramas
+de palabra y de carácter, o mediante representaciones contextuales de un modelo
+de lenguaje preentrenado.
+\item \textbf{Variable dependiente ($Y$):} presencia de evento adverso y, en
+caso afirmativo, su naturaleza según el Anexo 02:
+\begin{equation}
+Y_1 \in \{\text{evento}, \text{no evento}\}, \quad
+Y_2 \in \{n_1, \dots, n_{12}\}
+\end{equation}
+\item \textbf{Variables intervinientes:}
+\begin{itemize}
+\item Época de codificación diagnóstica (CIE-9 frente a CIE-10), que induce un
+confusor documental si no se controla.
+\item Longitud del documento frente a la ventana de contexto del modelo.
+\item Prevalencia del evento en la población, que determina el valor predictivo
+positivo operativo.
+\item Desbalance entre las clases de naturaleza.
+\end{itemize}
+\end{itemize}
 
-\section{Corpus y método}
+\subsection{Delimitación de la investigación}
+\begin{itemize}
+\item \textbf{Alcance temático:} detección y clasificación de eventos adversos
+documentados en resúmenes de alta hospitalaria, y su priorización según la
+matriz normativa. Quedan fuera los incidentes sin daño, que por definición no
+se documentan en una epicrisis.
+\item \textbf{Alcance tecnológico:} modelos léxicos y transformers clínicos
+ejecutables en una estación de trabajo con GPU de 4\,GB. No se abordan modelos
+de secuencia larga ni entrenamiento distribuido.
+\item \textbf{Alcance metodológico:} supervisión débil para el etiquetado,
+validación experta ciega sobre una submuestra estratificada, y evaluación
+mediante métricas sensibles al desbalance con intervalos de confianza.
+\end{itemize}
+
+\subsection{Formulación del problema}
+
+\subsubsection{Pregunta general}
+\emph{¿En qué medida un sistema de procesamiento de lenguaje natural aplicado
+al texto libre de los resúmenes de alta permite detectar los eventos adversos
+ocurridos durante la hospitalización y clasificarlos según la taxonomía
+normativa vigente, con una fiabilidad contrastable frente al juicio experto?}
+
+\subsubsection{Preguntas específicas}
+\begin{enumerate}
+\item ¿Es posible construir una etiqueta de referencia mediante supervisión
+débil sobre codificación diagnóstica, y verificar que el modelo resultante
+aprende el fenómeno clínico y no un artefacto documental?
+\item ¿Qué desempeño alcanza un modelo léxico frente a transformers clínicos
+ajustados, cuando ambos se comparan en igualdad de ventana de contexto y de
+tratamiento del desbalance?
+\item ¿Cuál es la concordancia del sistema con el juicio de evaluadores
+expertos independientes, y qué papel puede desempeñar en un flujo real de
+gestión de la calidad?
+\end{enumerate}
+
+\subsection{Justificación de la investigación}
+\begin{enumerate}
+\item \textbf{Justificación técnica.} La literatura de detección automática de
+eventos adversos rara vez audita la validez de la etiqueta con que entrena. Este
+trabajo aporta evidencia empírica sobre los modos de fallo de la supervisión
+débil en texto clínico, y una comparación entre familias de modelos con las
+condiciones explícitamente controladas.
+\item \textbf{Justificación económica e institucional.} El subregistro
+estimado supone del orden de 37\,000 eventos anuales que no se gestionan. Un
+sistema capaz de acotar el volumen a revisar permite dirigir el esfuerzo del
+personal de calidad hacia los casos de mayor impacto, sin ampliar la plantilla.
+\item \textbf{Justificación social.} La detección temprana de eventos adversos
+es condición para su prevención. Cada evento identificado y gestionado es daño
+evitable en pacientes futuros, que es el fin último de la normativa de
+seguridad del paciente \cite{who}.
+\end{enumerate}
+
+\subsection{Objetivos de la investigación}
+
+\emph{Objetivo general:} desarrollar y evaluar un sistema de procesamiento de
+lenguaje natural que detecte eventos adversos en resúmenes de alta, los
+clasifique según la taxonomía del Anexo 02 y los priorice mediante la matriz
+normativa, validando su desempeño frente al juicio experto.
+
+\emph{Objetivos específicos:}
+\begin{enumerate}
+\item Construir un corpus etiquetado mediante supervisión débil y auditar la
+validez de la etiqueta resultante.
+\item Comparar modelos léxicos y transformers clínicos en condiciones
+controladas de ventana de contexto y tratamiento del desbalance.
+\item Estimar la concordancia del sistema con evaluadores expertos
+independientes y caracterizar su papel operativo.
+\item Operacionalizar la matriz de priorización normativa y la asignación de
+responsable sobre las detecciones obtenidas.
+\end{enumerate}
+
+\subsection{Hipótesis de trabajo}
+\begin{itemize}
+\item $H_1$: la representación léxica del texto de una epicrisis contiene
+información suficiente para discriminar la presencia de evento adverso con una
+capacidad discriminativa significativamente superior al azar.
+\item $H_2$: un modelo de lenguaje clínico preentrenado supera al enfoque
+léxico en esta tarea.
+\item $H_3$: el criterio de anotación derivado de la normativa es reproducible
+entre evaluadores independientes, con una concordancia situada en la banda
+sustancial de la escala de Landis y Koch \cite{landis}.
+\end{itemize}
+
+\noindent Como se documenta en las Secciones~\ref{sec:modelos}
+y~\ref{sec:experto}, $H_1$ y $H_3$ se sostienen, mientras que $H_2$
+\textbf{se refuta en su formulación original} y solo se sostiene de forma
+condicionada, una vez controladas la ventana de contexto y la ponderación de
+clases. El resultado negativo se reporta como tal.
+
+\section{Metodología de trabajo}
+\subsection{Corpus y diseño}
 Se emplea MIMIC-IV-Note v2.2 \cite{mimic4}, alojada en PhysioNet
 \cite{physionet}, con 331\,793 resúmenes de alta en inglés del Beth Israel
 Deaconess Medical Center (2008--2019). El corpus de modelado quedó en
@@ -220,7 +348,7 @@ aparece simultáneamente en entrenamiento y prueba. La vectorización TF-IDF se
 ajusta únicamente sobre el conjunto de entrenamiento. La implementación emplea
 scikit-learn \cite{sklearn} y la biblioteca \emph{Transformers} \cite{hf}.
 
-\section{Validez del etiquetado y control de sesgos}
+\subsection{Validez del etiquetado y control de sesgos}
 El etiquetado por supervisión débil \cite{snorkel} traslada la calidad del
 corpus a la calidad de las reglas, de modo que su validez debe verificarse de
 forma explícita y no presuponerse. Se aplicó un protocolo sistemático de
@@ -298,7 +426,7 @@ El emparejamiento resultante es exacto:
 rasgos de mayor peso pasaron a ser inequívocamente clínicos (\emph{fall}, \emph{induced}, \emph{ileus}, \emph{revision}, \emph{in stent}, \emph{pressure ulcer}, \emph{restenosis}, \emph{reaction}) y el
 artefacto documental desapareció del modelo.
 
-\section{Evaluación de los modelos}
+\subsection{Estrategia de evaluación}
 La evaluación se diferencia según la etapa del canal y el objetivo de gestión,
 con métricas elegidas de forma explícita y no por convención.
 
@@ -356,7 +484,7 @@ coeficiente $\kappa$ de Cohen \cite{cohen} e interpretada según Landis y Koch
 recomendación de Sim y Wright \cite{sim} para evitar la interpretación errónea
 del coeficiente en escenarios desbalanceados \cite{feinstein}.
 
-\section{Resultados}
+\section{Resultados experimentales}
 \subsection{Detección binaria}
 \label{sec:deteccion}
 Vectorización TF-IDF (palabra y carácter) con LinearSVC balanceado. Los
@@ -436,6 +564,7 @@ etapa se particionó por separado, evaluar la cascada sobre todo el conjunto
 habría constituido fuga de información.
 
 \subsection{Comparación con transformers clínicos}
+\label{sec:modelos}
 La comparación de mayo concluyó que el modelo léxico superaba al transformer
 clínico. Al completarla en condiciones controladas, esa conclusión
 \textbf{no se sostiene}: procedía de dos asimetrías no declaradas que
@@ -642,7 +771,7 @@ paradoja descrita por Feinstein y Cicchetti \cite{feinstein} llevada al
 límite. Estimar la concordancia en naturaleza exigiría una muestra
 estratificada sobre las doce categorías, no sobre el veredicto binario.
 
-\section{Clasificación del corpus ERSP en español con etiqueta de oro}
+\subsection{Clasificación del corpus ERSP en español con etiqueta de oro}
 \label{sec:ersp}
 
 \subsection{Motivación: estándar de plata frente a estándar de oro}
@@ -828,7 +957,7 @@ Lo que sí demuestran es doble: que la taxonomía nacional es aprendible con
 etiqueta humana experta, y que existe una vía de transferencia del sistema al
 español que no depende de traducir el corpus en inglés.
 
-\section{Desempeño del sistema frente al juicio experto}
+\subsection{Desempeño del sistema frente al juicio experto}
 \label{sec:experto}
 
 Las métricas anteriores comparan el sistema contra etiquetas derivadas de
@@ -936,7 +1065,7 @@ con 68 casos, el intervalo de la especificidad es
 suficientemente amplio como para no sostener afirmaciones sobre su valor
 puntual.
 
-\section{De la detección a la gestión: priorización y responsable}
+\section{Desarrollo de la solución: de la detección a la gestión}
 \label{sec:gemses}
 
 Detectar y clasificar un evento no lo gestiona. Un servicio de calidad que
@@ -1104,6 +1233,17 @@ taxonomía nacional, y la \textbf{integración con la matriz de priorización}
 (Sección~\ref{sec:gemses}) convierte la detección en una decisión de gestión
 con responsable asignado, que es el destino aplicado del sistema.
 
+\section*{Enlace a los recursos}
+El código, los resultados, las figuras y este informe están disponibles en el
+repositorio del curso: \url{https://github.com/carlosperez100/PLN_SP}.
+El reporte en línea, generado automáticamente desde los mismos archivos de
+resultados, se publica en \url{https://carlosperez100.github.io/PLN_SP/}.
+
+Los datos clínicos \textbf{no se publican}: proceden de MIMIC-IV, de acceso
+credencializado bajo acuerdo de uso con PhysioNet, y no salen del entorno
+local. El repositorio contiene únicamente código, métricas agregadas y el
+informe.
+
 \begin{thebibliography}{99}
 \footnotesize
 
@@ -1228,5 +1368,7 @@ edición definitiva de diciembre de 2025, publicada el 26 de marzo de 2026.
 Estadística Institucional. [En línea]. Disponible en:
 \url{https://www.gob.pe/institucion/essalud/informes-publicaciones/6505357-essalud-en-cifras-informativo-mensual-2025}
 \end{thebibliography}
+
+
 
 \end{document}
