@@ -141,12 +141,13 @@ def cargar(ruta):
 f9  = cargar("fase9_final/resultados_finales.json")      # deteccion + naturaleza
 f10 = cargar("fase9_final/metricas_corregidas.json")     # IC agrupado + cascada
 f11 = cargar("fase11/resultados_transformers.json")      # transformers
+f12 = cargar("fase12/sistema_vs_experto.json")           # sistema vs experto
 kap = cargar("fase6_concordancia/concordancia.json")     # kappa
 oe5 = cargar("oe5_ersp/informe_oe5.json")                # espanol
 
 print("\\nartefactos:")
 for n, a in [("fase9", f9), ("fase10", f10), ("fase11", f11),
-             ("kappa", kap), ("oe5", oe5)]:
+             ("fase12", f12), ("kappa", kap), ("oe5", oe5)]:
     print(f"  {n:<8} {'OK' if a else 'NO DISPONIBLE'}")
 
 def falta(*art):
@@ -498,6 +499,67 @@ propusieron el PABAK, que corrige el efecto de prevalencia y sesgo.
 Reportar solo el kappa subestimaría la concordancia; reportar solo el PABAK la
 sobreestimaría. La práctica correcta es presentar ambos junto al acuerdo
 observado.
+""")
+
+
+md("""
+## 8-bis. El sistema contra el juicio experto
+
+El kappa de la seccion anterior mide el acuerdo **entre los dos anotadores**.
+Eso responde «¿es reproducible el criterio?», no «¿acierta el sistema?».
+
+La pregunta de investigacion se formulo respecto del juicio experto, y
+responderla exige comparar **sistema contra experto**. La referencia correcta no
+es un anotador individual —heredaria su criterio particular— sino el
+**consenso** de ambos: los casos en que coincidieron.
+""")
+
+code("""
+if not f12:
+    falta("fase12/sistema_vs_experto.json")
+else:
+    ce = f12["contra_experto"]
+    m = f12["matriz"]
+    print(f"referencia: {f12.get('referencia','consenso')}")
+    print(f"casos analizados: {f12['n_analizados']}")
+    print()
+    print("MATRIZ (filas = experto, columnas = sistema)")
+    print(f"                sistema SI   sistema NO")
+    print(f"  experto SI    {m['vp']:>10}   {m['fn']:>10}")
+    print(f"  experto NO    {m['fp']:>10}   {m['vn']:>10}")
+    print()
+    filas = [("Sensibilidad","sensibilidad"),("Especificidad","especificidad"),
+             ("VPP","vpp"),("VPN","vpn")]
+    print(pd.DataFrame([{"Metrica":n,"Valor":ce[k],
+                         "IC95":f"[{ce[k+'_ic95'][0]:.3f}, {ce[k+'_ic95'][1]:.3f}]"}
+                        for n,k in filas]).to_string(index=False))
+    print()
+    print(f"Kappa sistema-experto: {ce['kappa_sistema_experto']:.3f}")
+""")
+
+md("""
+### Robustez: el resultado no depende de quien anote
+
+Tener dos evaluadores permite comprobar que el desempeno no esta ajustado al
+criterio de una persona concreta.
+""")
+
+code("""
+if f12 and f12.get("por_evaluador"):
+    print(pd.DataFrame([{"Referencia":k, **v}
+                        for k,v in f12["por_evaluador"].items()]).to_string(index=False))
+    print()
+    print("La sensibilidad se mantiene sobre 0.90 contra cualquiera de los dos.")
+    sub = f12.get("subregistro_codigos") or {}
+    if sub:
+        print()
+        print("SUBREGISTRO DE LA CODIFICACION ADMINISTRATIVA")
+        print(f"  casos SIN codigo de evento adverso : {sub['n_controles_negativos']}")
+        print(f"  que el experto confirma como reales: {sub['confirmados_evento_real']} "
+              f"({sub['proporcion']:.1%})")
+        print()
+        print("  Es la premisa del trabajo, medida con datos propios:")
+        print("  las metricas calculadas contra codigos SUBESTIMAN al sistema.")
 """)
 
 # ============================================================== 9
