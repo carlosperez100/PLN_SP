@@ -53,3 +53,9 @@ env/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Compilacion LaTeX y respaldos temporales
+*.aux
+*.log
+*.out
+*.bak

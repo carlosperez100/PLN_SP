@@ -49,7 +49,7 @@ contexto: el modelo procesa solo el 9.0\% del documento. Contra el consenso de d
 independientes, el detector recupera el 94.5\,\%
 de los eventos confirmados con una especificidad de
 0.538, de modo que opera como filtro de cribado y no
-como árbitro. El 25% de los casos que la codificación
+como árbitro. El 25\% de los casos que la codificación
 administrativa declara negativos resultan ser eventos reales para el experto,
 lo que mide directamente el subregistro que motiva el trabajo.
 \end{abstract}
@@ -321,7 +321,22 @@ sustancial de la escala de Landis y Koch \cite{landis}.
 estas hipótesis con los resultados obtenidos.
 
 \section{Metodología de trabajo}
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=\textwidth]{figuras/fig5_flujo.pdf}
+\caption{Flujo completo del canal. Banda 1: construcción del corpus por
+supervisión débil sobre MIMIC-IV-Note, con la auditoría de validez que
+corrigió siete modos de fallo. Banda 2: modelado en dos etapas con
+abstención y evaluación honesta (cascada extremo a extremo y contraste con
+juicio experto). Banda 3: transferencia al español con el corpus ERSP de
+etiqueta de oro y destino aplicado en la matriz de priorización GEMSES.}
+\label{fig:flujo}
+\end{figure*}
+
 \subsection{Corpus y diseño}
+La Figura~\ref{fig:flujo} resume el flujo completo del canal; las
+subsecciones siguientes detallan cada banda.
 Se emplea MIMIC-IV-Note v2.2 \cite{mimic4}, alojada en PhysioNet
 \cite{physionet}, con 331\,793 resúmenes de alta en inglés del Beth Israel
 Deaconess Medical Center (2008--2019). El corpus de modelado quedó en
@@ -1040,8 +1055,8 @@ automáticamente los de alta.
 De los 16 casos que la codificación
 administrativa clasifica como negativos ---sin código de evento adverso---, el
 consenso experto confirma evento real en 4
-(25.0%, IC 95\,\%
-10.2%--49.5%).
+(25.0\%, IC 95\,\%
+10.2\%--49.5\%).
 
 Es la medición directa de la premisa del trabajo: la codificación
 administrativa omite eventos que el juicio clínico reconoce. En consecuencia,
@@ -1198,7 +1213,7 @@ de trabajo convencional y sin requerir infraestructura de aprendizaje profundo,
 lo que sostiene su viabilidad de despliegue institucional.
 
 La medición frente al juicio experto aporta además un hallazgo de valor
-directo para la gestión: el \textbf{25% de los casos
+directo para la gestión: el \textbf{25\% de los casos
 que la codificación administrativa clasifica como negativos son eventos
 adversos reales}. Es la cuantificación, con datos propios, del subregistro que
 motiva el trabajo, y confirma que el texto clínico contiene información que los
@@ -1231,7 +1246,7 @@ resultados refuerzan esa lectura: el desempeño se mantiene contra cualquiera de
 los dos evaluadores por separado ---no está ajustado a un criterio
 individual--- y el margen de decisión es menor precisamente en los casos donde
 los humanos discrepan, de modo que su incertidumbre resulta aprovechable como
-criterio de derivación. Además, el 25% de los casos
+criterio de derivación. Además, el 25\% de los casos
 sin código de evento adverso resultan ser eventos reales para el consenso
 experto: la medida directa del subregistro que motiva el trabajo, y la razón
 por la que las métricas calculadas contra codificación lo subestiman. El

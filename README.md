@@ -6,7 +6,7 @@ Docente: Dr. Wester Zela Moraya · Autor: **Carlos Pérez Pérez**
 
 > Repositorio **exclusivo del curso de PLN**. Reúne el código, los resultados y la
 > explicación de la parte de procesamiento de lenguaje natural del proyecto
-> *Detección Automática de Eventos Adversos Hospitalarios en Epicrisis*.
+> *Detección Automática de Eventos Adversos Hospitalarios en Notas Clínicas*.
 
 **🌐 Reporte en línea (sitio web): https://carlosperez100.github.io/PLN_SP/**
 
@@ -14,26 +14,39 @@ Docente: Dr. Wester Zela Moraya · Autor: **Carlos Pérez Pérez**
 
 ## 🎯 Qué hace este trabajo
 
-Compara, sobre **14,853 epicrisis reales** de MIMIC-IV (12,785 pacientes), tres
-enfoques de PLN para clasificar la **naturaleza del evento adverso** (8 clases del
-Anexo 02 GG-ESSALUD-2021):
+Construye y audita un canal de PLN que **detecta eventos adversos en notas
+clínicas** (MIMIC-IV, 70,000 notas de modelado sobre 331,793 procesadas) y los
+clasifica según el Anexo 02 GG-ESSALUD-2021, comparando **7 modelos**: TF-IDF
+(LogReg / LinearSVC, con y sin balanceo, completo y truncado) frente a
+**Bio_ClinicalBERT y BioBERT con ajuste fino en GPU**.
 
-- **Modelo léxico clásico** — TF-IDF + Regresión Logística / LinearSVC
-- **Transformer clínico** — Bio_ClinicalBERT (congelado, como extractor de rasgos)
+### Cifras vigentes (fase 9 — tras corregir los 7 modos de fallo)
 
-### Resultado principal
+| Métrica del detector final | Valor | IC 95 % |
+|---|---|---|
+| Sensibilidad | **0.762** | [0.751, 0.773] |
+| Especificidad | **0.770** | [0.759, 0.781] |
+| AUC | **0.843** | [0.836, 0.849] |
+| VPP a prevalencia real (20.12 %) | **0.455** | — |
 
-| Modelo | Exactitud (CV 5-fold) | F1-macro | Kappa |
-|---|---|---|---|
-| TF-IDF + Regresión Logística | 0.628 | 0.466 | 0.474 |
-| **★ TF-IDF + LinearSVC (palabra + char)** | **0.731** | **0.515** | **0.581** |
-| Bio_ClinicalBERT congelado + LogReg | 0.38 | 0.19 | 0.18 |
+| Ranking (misma partición, semilla 42) | F1-macro | Tiempo |
+|---|---|---|
+| ★ TF-IDF + LinearSVC (texto completo) | **0.459** | 48 s |
+| Bio_ClinicalBERT (*fine-tuning*, ponderado) | 0.354 | 4.0 h |
+| BioBERT (*fine-tuning*) | 0.210 | 2.9 h |
 
-**Hallazgo:** en una tarea definida por patrones léxicos, el modelo clásico superó
-al transformer clínico sin *fine-tuning*. La hipótesis inicial se **refutó**. La
-métrica honesta es el F1-macro (~0.51); la etiqueta débil tiene circularidad
-estructural, por lo que las cifras miden consistencia con la regla, no validez
-clínica (ver [`resultados/`](resultados/)).
+**Hallazgo:** la hipótesis inicial se **refutó** — el transformer clínico no
+superó al modelo léxico, y la causa está medida: su ventana de 256 tokens cubre
+solo el **9 %** del documento (truncar el TF-IDF a esa misma ventana lo degrada
+28 % de F1-macro). Contra **juicio experto** (163 casos anotados, 78 por
+duplicado): sensibilidad **0.945** sobre el consenso, **0.914 [0.849–0.953]**
+en el análisis ampliado. Transferencia al **español con etiqueta de oro**
+(corpus ERSP): exactitud 0.862 (tipo) · 0.846 (naturaleza) · 0.726 (severidad)
+· 0.761 (código de evento, 41 clases).
+
+> ⚠️ Las cifras preliminares publicadas antes del 27-jul (exactitud 0.731,
+> F1-macro 0.515 sobre 14,853 notas) fueron **invalidadas por la auditoría**
+> del pipeline y se conservan solo como registro histórico más abajo.
 
 ---
 
