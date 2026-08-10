@@ -285,7 +285,23 @@ NOTAS = [
     "ejemplos — el corpus peruano rescata clases que el ingles no "
     "cubre.",
 
-    # 22 · GEMSES destino
+    # 22 · Posicion frente a la literatura (NUEVA — lo que pidio el docente)
+    "Esta lamina responde directamente al pedido del docente: comparar mis "
+    "metricas con las de los autores. Empiezo con la advertencia (esta en "
+    "la bajada): los estandares difieren — se declara y se compara igual. "
+    "Murff 2011 en JAMA: el PLN alcanza sensibilidades de 59 a 91% por "
+    "complicacion, contra 5 a 46% de los indicadores por codigos — mi "
+    "trabajo esta en el mismo regimen: 0.762 contra codigos, 0.945 contra "
+    "experto. Classen 2011: eventos en el 33% de las admisiones y la "
+    "notificacion voluntaria pierde el 90% — yo lo medi con datos propios: "
+    "25% de los negativos eran reales. Zech 2018: AUC 0.931 que cae a "
+    "0.815 fuera del hospital, la red identificaba el hospital en 99.9% — "
+    "mi paralelo exacto: 0.973 espurio a 0.843 controlado. Y Li 2022: la "
+    "ventana larga supera a ClinicalBERT — coherente con mi -28% al "
+    "truncar. Cierre: 'la literatura reporta estos tres fenomenos por "
+    "separado; este trabajo los replica y los CONTROLA con datos propios'.",
+
+    # 23 · GEMSES destino
     "Ultima caja del diagrama; breve porque excede el alcance de PLN del "
     "curso. Lo detectado alimenta la matriz de priorizacion "
     "institucional — la vigente en EsSalud — que combina frecuencia e "
@@ -294,16 +310,33 @@ NOTAS = [
     "diferencia entre un modelo que clasifica y un sistema que "
     "gestiona. (30-40 segundos maximo.)",
 
-    # 23 · Conclusiones
-    "Destacar tres. UNO: el modelo lexico supero al transformer; la "
-    "hipotesis se refuto y la causa quedo MEDIDA — ventana de contexto, "
-    "no arquitectura; la mejora es secuencia larga. DOS (la principal): "
-    "el aporte metodologico es la AUDITORIA de validez — siete modos de "
-    "fallo, con el confusor de epoca como caso ejemplar de aprendizaje "
-    "por atajo; sin ella, mis metricas habrian medido los defectos del "
-    "corpus, no los eventos. TRES: concordancia con juicio experto en "
-    "banda sustancial y 2.26x de eficiencia del revisor — utilidad "
-    "operativa real como cribado. Las otras tres estan escritas: "
+    # 24 · El aporte (NUEVA — 'vender el trabajo', pedido del docente)
+    "La lamina de VENTA que pidio el docente. 'Mi aporte no es un algoritmo "
+    "nuevo — es triple.' METODOLOGICO: un protocolo de auditoria de validez "
+    "para supervision debil en texto clinico — siete modos de fallo "
+    "identificados, medidos y corregidos; el confusor de epoca como caso "
+    "ejemplar. EMPIRICO: el aislamiento experimental de la ventana de "
+    "contexto como el factor que decide esta tarea — mismo algoritmo, "
+    "mismos datos, -28% al truncar; eso define la via de mejora correcta. "
+    "APLICADO: el primer acople documentado de PLN con la taxonomia "
+    "normativa peruana — Anexos 02 y 03 — validado con etiqueta de oro en "
+    "espanol. Remate: 'la literatura reporta metricas; este trabajo reporta "
+    "metricas AUDITADAS — y las lleva por primera vez a la norma y al "
+    "idioma de nuestro sistema de salud'.",
+
+    # 25 · Conclusiones
+    "Abrir con la numero UNO, que responde al problema original — es lo "
+    "que el docente pidio explicitamente: '¿Resuelve el problema? La capa "
+    "tecnica si: el sistema encuentra lo que nadie notifico — 25% de los "
+    "negativos por codigo eran reales — y multiplica por 2.26 la "
+    "eficiencia del revisor. La capa institucional queda LISTA: el piloto "
+    "tiene sus parametros calculados.' Luego destacar dos mas: el modelo "
+    "lexico supero al transformer con la causa MEDIDA (ventana de "
+    "contexto, no arquitectura; la mejora es secuencia larga), y la "
+    "AUDITORIA de validez como aporte central — siete modos de fallo, con "
+    "el confusor de epoca como caso ejemplar; sin ella, las metricas "
+    "habrian medido los defectos del corpus, no los eventos. Las demas "
+    "estan escritas: "
     "cascada, espanol, destino institucional.",
 
     # 24 · Limitaciones
@@ -344,7 +377,7 @@ NOTAS = [
 ]
 
 pr = Presentation(P)
-assert len(pr.slides) == len(NOTAS), (
+assert len(pr.slides) == len(NOTAS) == 29, (
     f"desfase: {len(pr.slides)} laminas vs {len(NOTAS)} notas")
 
 for slide, nota in zip(pr.slides, NOTAS):

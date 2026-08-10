@@ -695,7 +695,56 @@ sino por una arquitectura capaz de abarcar el documento completo.
 \subsection{Contraste con trabajos previos}
 La comparación numérica directa con la literatura \textbf{no es
 metodológicamente admisible} en este caso, y conviene argumentar por qué en
-lugar de forzar una tabla de cifras que induzca a error.
+lugar de forzar una equiparación que induzca a error. No obstante, para
+situar el orden de magnitud del enfoque, la Tabla~\ref{tab:literatura}
+contrasta los hallazgos de los estudios de referencia con los resultados
+análogos de este trabajo, con la advertencia declarada.
+
+\begin{table*}[!t]
+\caption{Posición del presente trabajo frente a la literatura. Comparación
+orientativa: los estándares de referencia (revisión manual, GTT, códigos) y
+los corpus difieren entre filas, por lo que las cifras no son directamente
+equiparables (véase el texto).}
+\label{tab:literatura}
+\centering
+\footnotesize
+\begin{tabular}{p{2.6cm}p{3.4cm}p{5.2cm}p{5.2cm}}
+\hline
+\textbf{Estudio} & \textbf{Corpus y estándar} & \textbf{Hallazgo reportado}
+& \textbf{Resultado análogo de este trabajo} \\
+\hline
+Murff \emph{et al.}, 2011, \emph{JAMA} \cite{murff} &
+2,974 cirugías (Veterans Affairs); referencia: revisión manual &
+Sensibilidad del PLN por complicación 59--91\,\% (neumonía 64\,\%, sepsis
+89\,\%, insuf. renal 82\,\%); los indicadores por códigos: 5--46\,\% &
+Mismo régimen de funcionamiento: sens. 0.762 frente a códigos y
+\textbf{0.945 frente a consenso experto} (n=68), con esp. 0.770 y 0.538
+respectivamente \\
+\hline
+Classen \emph{et al.}, 2011, \emph{Health Affairs} \cite{classen} &
+795 admisiones, 3 hospitales; GTT + revisión &
+Eventos adversos en el 33\,\% de las admisiones; la notificación voluntaria
+y los PSI \textbf{pierden $\sim$90\,\%} de los eventos &
+El subregistro aquí medido con datos propios: el \textbf{25\,\%} de los
+casos negativos por codificación son eventos reales para el experto \\
+\hline
+Zech \emph{et al.}, 2018, \emph{PLoS Med.} \cite{zech} &
+Radiografías de tórax, multi-hospital &
+AUC interno 0.931 cae a 0.815 fuera del hospital; la red identifica el
+hospital de origen en $>$99.9\,\% de los casos &
+Paralelo directo en texto: AUC 0.973 sostenido por la plantilla de época
+(rasgo dominante no clínico) $\rightarrow$ \textbf{0.843} con el confusor
+controlado \\
+\hline
+Li \emph{et al.}, 2022 \cite{cliniclong} &
+Benchmarks de PLN clínico &
+Clinical-Longformer (ventana 4,096) supera consistentemente a ClinicalBERT
+(512) &
+Coherente con el efecto aquí aislado: truncar el texto al alcance de BERT
+cuesta $-$28\,\% de F1-macro con idéntica arquitectura léxica \\
+\hline
+\end{tabular}
+\end{table*}
 
 Los trabajos de referencia validan contra \emph{revisión manual de historias
 clínicas}, que es un estándar de oro; las métricas de este trabajo se calculan
@@ -1200,6 +1249,25 @@ fiabilidad contra un evaluador independiente.
 \end{enumerate}
 
 \section{Conclusiones}
+\textbf{Sobre el problema planteado.} El problema original es el subregistro
+de eventos adversos ($\sim$72\,\% en la institución de destino): la
+información existe en el texto clínico, pero nadie puede leer el 100\,\% de
+las notas. Este trabajo demuestra que \textbf{la capa técnica de ese problema
+es resoluble}: el sistema recupera eventos que nadie notificó ---el 25\,\% de
+los casos que la codificación declaraba negativos resultaron reales--- y
+multiplica por 2.26 la eficiencia del revisor a prevalencia real. Lo que este
+trabajo no resuelve todavía es la dimensión institucional: esa exige el
+piloto en un servicio de calidad, cuyos parámetros operativos (VPP 0.455 a
+prevalencia 20.12\,\%) quedan calculados. El \textbf{aporte} es triple:
+\emph{(i) metodológico} --- un protocolo de auditoría de validez para
+supervisión débil en texto clínico (siete modos de fallo corregidos), con el
+confusor de época como caso ejemplar de aprendizaje por atajo;
+\emph{(ii) empírico} --- el aislamiento experimental de la ventana de
+contexto como factor dominante sobre la arquitectura; y
+\emph{(iii) aplicado} --- el primer acople documentado de un canal de PLN con
+la taxonomía normativa peruana (Anexos 02 y 03), validado con etiqueta de oro
+en español.
+
 El sistema desarrollado \textbf{detecta el
 94.5\,\% de los eventos adversos que el consenso
 de dos evaluadores expertos confirma} sobre el texto libre de los resúmenes de

@@ -1090,6 +1090,43 @@ nota(s, y2 + Inches(1.82), "T4 es nuevo: el código de evento específico "
      "nunca se había modelado. De las 154 categorías usadas, 41 tienen casos "
      "suficientes y cubren el 89 % del corpus.")
 
+# ================================================ 21b. LITERATURA
+s, y = lamina("Posición frente a la literatura",
+              seccion="4.5 · Resultados",
+              bajada="Comparación orientativa (Tabla VI del artículo): los "
+              "estándares de referencia y los corpus difieren, por lo que "
+              "las cifras no son directamente equiparables — se declara y "
+              "se compara igual.")
+filas = [["Estudio", "Hallazgo reportado", "Resultado análogo aquí"],
+         ["Murff 2011 · JAMA\n(2,974 cirugías, est. oro)",
+          "Sens. del PLN 59–91 % según complicación;\n"
+          "los indicadores por códigos: 5–46 %",
+          "Sens. 0.762 vs códigos y 0.945 vs consenso\n"
+          "experto — mismo régimen de funcionamiento"],
+         ["Classen 2011 · Health Affairs\n(GTT, 795 admisiones)",
+          "EA en el 33 % de las admisiones; la notificación\n"
+          "voluntaria y los PSI pierden ~90 %",
+          "Subregistro medido con datos propios: 25 % de\n"
+          "los negativos por código eran eventos reales"],
+         ["Zech 2018 · PLoS Med.\n(RX de tórax, multi-hospital)",
+          "AUC interno 0.931 → 0.815 fuera del hospital;\n"
+          "identifica el hospital de origen en >99.9 %",
+          "El paralelo en texto: AUC 0.973 espurio (época)\n"
+          "→ 0.843 con el confusor controlado"],
+         ["Li 2022 · Clinical-Longformer\n(benchmarks clínicos)",
+          "La ventana de 4,096 tokens supera\n"
+          "consistentemente a ClinicalBERT (512)",
+          "Coherente con el efecto aislado aquí: truncar\n"
+          "al alcance de BERT cuesta −28 % de F1-macro"]]
+tabla(s, MARGEN, y + Inches(0.05), ANCHO_UTIL, filas,
+      anchos=[0.26, 0.37, 0.37], alto_fila=Inches(0.78), tam=11.5,
+      alto_cabecera=Inches(0.34))
+nota(s, y + Inches(3.75), "La lectura transversal: el PLN supera a la "
+     "codificación administrativa en toda la literatura (Murff), el "
+     "subregistro es un fenómeno universal (Classen), el aprendizaje por "
+     "atajo amenaza a cualquier modelo clínico (Zech) — y este trabajo "
+     "replica los tres hallazgos con datos propios y los controla.")
+
 # =========================================================== 21. GEMSES
 s, y = lamina("Del texto a la decisión de gestión",
               seccion="4.6 · Destino aplicado",
@@ -1132,9 +1169,52 @@ nota(s, Inches(5.85), "La matriz no es una propuesta del autor: la Directiva "
      "N.º 7-OGCyH-ESSALUD-2020 la cita textualmente en su artículo 5.13 como "
      "el instrumento vigente.")
 
+# =========================================================== 22b. EL APORTE
+s, y = lamina("El aporte de este trabajo",
+              seccion="5 · Conclusiones",
+              bajada="No es un algoritmo nuevo: es la evidencia de cómo "
+              "hacer CONFIABLE el PLN clínico, y su primer acople con la "
+              "norma peruana.")
+w, h = Inches(3.95), Inches(3.1)
+aportes = [
+    ("METODOLÓGICO", GRANATE,
+     "Un protocolo de auditoría de validez para supervisión débil en texto "
+     "clínico: siete modos de fallo identificados, medidos y corregidos.\n\n"
+     "El confusor de época como caso ejemplar de aprendizaje por atajo: "
+     "un AUC de 0.973 que era falso."),
+    ("EMPÍRICO", AZUL,
+     "El aislamiento experimental de la ventana de contexto como factor "
+     "dominante sobre la arquitectura.\n\n"
+     "Mismo algoritmo, mismos datos, solo cambia cuánto texto ve: "
+     "−28 % de F1-macro. Define la vía de mejora correcta."),
+    ("APLICADO", VERDE,
+     "El primer acople documentado de un canal de PLN con la taxonomía "
+     "normativa peruana (Anexos 02 y 03).\n\n"
+     "Validado con etiqueta de oro en español: naturaleza, código de "
+     "evento y severidad sobre 6,336 casos reales."),
+]
+for i, (t, col, cuerpo) in enumerate(aportes):
+    x = MARGEN + (w + Inches(0.28)) * i
+    rect(s, x, y + Inches(0.15), w, h, relleno=GRIS_TENUE)
+    rect(s, x, y + Inches(0.15), w, Pt(4), relleno=col)
+    caja(s, x + Inches(0.25), y + Inches(0.4), w - Inches(0.5),
+         Inches(0.35), t, tam=16, color=col, negrita=True)
+    caja(s, x + Inches(0.25), y + Inches(0.92), w - Inches(0.5),
+         Inches(2.2), cuerpo, tam=12.5, color=TINTA, interlinea=1.25)
+nota(s, y + Inches(3.5), "Frente al estado del arte: la literatura reporta "
+     "métricas; este trabajo reporta métricas AUDITADAS, con el protocolo "
+     "que las hace confiables — y las lleva por primera vez a la norma y "
+     "al idioma del sistema de salud peruano.", color=GRANATE,
+     fondo=GRANATE_CLARO)
+
 # =========================================================== 22. CONCLUSIONES
 s, y = lamina("Conclusiones", seccion="5 · Conclusiones")
 concl = [
+    ("¿Resuelve el problema planteado? La capa técnica, sí; la institucional "
+     "queda lista.",
+     "El sistema encuentra lo no notificado (el 25 % de los negativos por "
+     "código eran reales) y multiplica por 2.26 la eficiencia del revisor. "
+     "El piloto institucional tiene sus parámetros calculados."),
     ("Un modelo léxico bien construido superó al transformer clínico.",
      "La hipótesis inicial se refutó y el resultado negativo se reporta como "
      "tal: TF-IDF + LinearSVC 0.459 frente a Bio_ClinicalBERT 0.354 de "
@@ -1162,11 +1242,11 @@ for i, (t, d) in enumerate(concl, 1):
          relleno=GRANATE)
     caja(s, MARGEN, yy + Inches(0.05), Inches(0.3), Inches(0.25), str(i),
          tam=12, color=BLANCO, negrita=True, alineado=PP_ALIGN.CENTER)
-    caja(s, MARGEN + Inches(0.45), yy, Inches(12.0), Inches(0.28), t,
-         tam=14, color=TINTA, negrita=True)
-    caja(s, MARGEN + Inches(0.45), yy + Inches(0.28), Inches(12.0),
-         Inches(0.44), d, tam=12, color=GRIS, interlinea=1.15)
-    yy += Inches(0.83)
+    caja(s, MARGEN + Inches(0.45), yy, Inches(12.0), Inches(0.26), t,
+         tam=13.5, color=TINTA, negrita=True)
+    caja(s, MARGEN + Inches(0.45), yy + Inches(0.26), Inches(12.0),
+         Inches(0.4), d, tam=11.5, color=GRIS, interlinea=1.12)
+    yy += Inches(0.74)
 
 # =========================================================== 23. LIMITACIONES
 s, y = lamina("Limitaciones declaradas", seccion="5 · Conclusiones",
