@@ -330,7 +330,7 @@ for i, (k, v) in enumerate([
         ("Curso", "MIA-10 · Procesamiento del Lenguaje Natural"),
         ("Docente", "Dr. Wester Zela Moraya"),
         ("Autor", "Carlos Pérez Pérez"),
-        ("Fecha", "9 de agosto de 2026")]):
+        ("Fecha", "16 de agosto de 2026")]):
     yy = Inches(3.62) + Inches(0.46) * i
     caja(s, MARGEN, yy, Inches(1.3), Inches(0.34), k, tam=14, color=GRIS)
     caja(s, MARGEN + Inches(1.45), yy, Inches(6), Inches(0.34), v, tam=15.5,
@@ -486,6 +486,23 @@ nota(s, Inches(5.05), "Zech et al. entrenaron un detector de neumonía que "
      "radiografía. Ese antecedente es exactamente lo que encontramos aquí "
      "— y lo veremos medido.", color=AMBAR,
      fondo=RGBColor(0xFA, 0xF0, 0xDC))
+
+# ================================================ 6b. MAPA ESTADO DEL ARTE
+# Lamina en blanco con el mapa a PANTALLA COMPLETA (el PNG trae su titulo)
+from PIL import Image as _Img
+s = prs.slides.add_slide(BLANCO_LAYOUT)
+img_mapa = RAIZ / "presentacion" / "mapa_estado_arte.png"
+_w, _h = _Img.open(str(img_mapa)).size
+_asp = _w / _h
+if _asp >= (13.333 / 7.5):          # limitado por ancho
+    w_mapa = Inches(13.333)
+    h_mapa = Inches(13.333 / _asp)
+else:                               # limitado por alto
+    h_mapa = Inches(7.5)
+    w_mapa = Inches(7.5 * _asp)
+s.shapes.add_picture(str(img_mapa), int((Inches(13.333) - w_mapa) / 2),
+                     int((Inches(7.5) - h_mapa) / 2),
+                     width=w_mapa, height=h_mapa)
 
 # =========================================================== 7. SELECCIÓN
 s, y = lamina("Cómo se eligió el modelo, y con qué criterio",
@@ -1359,11 +1376,62 @@ caja(s, Inches(1.4), Inches(4.65), Inches(10.5), Inches(0.9),
      "El aporte no es una métrica alta: es una métrica en la que se puede "
      "confiar.", tam=18, color=RGBColor(0xE8, 0xC8, 0xCC),
      alineado=PP_ALIGN.CENTER, interlinea=1.25)
-caja(s, Inches(1.4), Inches(5.9), Inches(10.5), Inches(0.8),
+caja(s, Inches(0.9), Inches(5.45), Inches(11.5), Inches(0.75),
+     "Agradecimiento — revisión experta de eventos adversos: "
+     "Dra. Lisette Ortiz Estrada (médica auditora, gestión de la calidad y "
+     "seguridad del paciente)\ny Dr. Carlos González Fuentes (médico y MBA, "
+     "consultor internacional en acreditación JCI).",
+     tam=12, color=RGBColor(0xE8, 0xC8, 0xCC), alineado=PP_ALIGN.CENTER,
+     interlinea=1.3)
+caja(s, Inches(1.4), Inches(6.35), Inches(10.5), Inches(0.8),
      "Carlos Pérez Pérez\nMIA-10 Procesamiento del Lenguaje Natural · "
      "Universidad Nacional de Ingeniería · 2026",
      tam=13, color=RGBColor(0xE0, 0xB8, 0xBE), alineado=PP_ALIGN.CENTER,
      interlinea=1.35)
+
+# ============================================== ANEXOS: figuras del artículo
+ANEXOS = [
+    ("anexo_fig1_roc.png", "Anexo A · Curva ROC del detector",
+     "El punto marcado es el umbral por defecto (sens 0.762 · esp 0.770). "
+     "El AUC de 0.843 se lee: ante un par al azar con/sin evento, el modelo "
+     "ordena bien el 84 % de las veces."),
+    ("anexo_fig2_confusion.png", "Anexo B · Matriz de confusión de la detección",
+     "Los falsos negativos (abajo-izquierda) son el error clínicamente más "
+     "costoso: un daño que vuelve a ser invisible. Por eso la sensibilidad "
+     "es la métrica prioritaria."),
+    ("anexo_fig3_ventana.png", "Anexo C · El efecto de la ventana de contexto",
+     "Mismo algoritmo y mismos datos: solo cambia cuánto texto ve. La "
+     "caída de −28 % de F1-macro al truncar es la causa medida de la "
+     "derrota del transformer."),
+    ("anexo_fig4_ersp_clases.png", "Anexo D · Desempeño por clase en el corpus español",
+     "Etiqueta de oro peruana: las clases con más ejemplos superan F1 0.85. "
+     "«Gestión de la organización», inviable en MIMIC (n=24), aquí alcanza "
+     "F1 0.85 con ~1,400 ejemplos."),
+]
+from PIL import Image as _Img2
+for archivo, titulo_anexo, pie in ANEXOS:
+    s, y = lamina(titulo_anexo, seccion="Anexos · Figuras del artículo")
+    ruta = RAIZ / "presentacion" / archivo
+    _w, _h = _Img2.open(str(ruta)).size
+    _asp = _w / _h
+    h_img = Inches(4.55)
+    w_img = Inches(4.55 * _asp)
+    if w_img > Inches(11.5):
+        w_img = Inches(11.5)
+        h_img = Inches(11.5 / _asp)
+    s.shapes.add_picture(str(ruta), MARGEN + int((ANCHO_UTIL - w_img) / 2),
+                         y + Inches(0.05), width=w_img, height=h_img)
+    nota(s, y + Inches(4.85), pie)
+
+# Anexo E: matriz de confusion 9x9 del espanol (sugerencia del docente)
+s, y = lamina("Anexo E · Matriz de confusión — naturaleza (corpus español)",
+              seccion="Anexos · Figuras del artículo")
+ruta_e = RAIZ / "presentacion" / "anexo_fig6_confusion_ersp.png"
+_w, _h = _Img2.open(str(ruta_e)).size
+h_e = Inches(5.75)
+w_e = Inches(5.75 * (_w / _h))
+s.shapes.add_picture(str(ruta_e), MARGEN + int((ANCHO_UTIL - w_e) / 2),
+                     y - Inches(0.15), width=w_e, height=h_e)
 
 SALIDA.parent.mkdir(parents=True, exist_ok=True)
 prs.save(str(SALIDA))

@@ -25,16 +25,17 @@ en epicrisis mediante Procesamiento de Lenguaje Natural}
 \author{\IEEEauthorblockN{Carlos Pérez Pérez}
 \IEEEauthorblockA{\textit{Maestría en Inteligencia Artificial}\\
 \textit{Universidad Nacional de Ingeniería}\\
-Lima, Perú}}
+Lima, Perú\\
+carlosperez100@gmail.com}}
 
 \maketitle
 
 \begin{abstract}
-La notificación de eventos adversos en EsSalud depende de un proceso manual y
+La notificación de eventos adversos en una institución peruana de salud depende de un proceso manual y
 voluntario con un subregistro estimado cercano al 72\,\%. Este trabajo evalúa
 un canal de Procesamiento de Lenguaje Natural que detecta eventos adversos en
 resúmenes de alta y los clasifica según la taxonomía del Anexo 02 de la
-Directiva GG-ESSALUD-2021, sobre 70,000 epicrisis de MIMIC-IV.
+directiva institucional de 2021, sobre 70,000 epicrisis de MIMIC-IV.
 El aporte central no es una métrica sino una auditoría: se identificaron y
 corrigieron siete defectos del canal, entre ellos un confusor de época
 CIE-9/CIE-10 que producía un caso ejemplar de aprendizaje por atajo, con
@@ -70,7 +71,7 @@ reducción del daño evitable como objetivo prioritario \cite{who}.
 El problema no es solo la ocurrencia sino la \emph{detección}. Classen
 \emph{et al.} \cite{classen} demostraron que los métodos voluntarios de
 notificación subestiman los eventos adversos hasta en un factor de diez frente
-a la revisión sistemática de historias. En EsSalud la notificación es manual,
+a la revisión sistemática de historias. En dicha institución la notificación es manual,
 voluntaria y posterior al hecho: en 2025 se registraron 515\,493 egresos
 hospitalarios \cite{cifras} y se notificaron 14\,275 eventos adversos
 (2.77\,\%), muy por debajo del 10\,\% estimado internacionalmente. La brecha
@@ -195,7 +196,7 @@ etiqueta, aspecto que los trabajos revisados no abordan.
 \section{Planteamiento del problema}
 
 \subsection{Descripción de la realidad problemática}
-La notificación de eventos adversos en EsSalud opera de forma reactiva: depende
+La notificación de eventos adversos en la institución de referencia opera de forma reactiva: depende
 de que un profesional decida reportar, tras el hecho y de manera voluntaria. La
 consecuencia medible es un subregistro cercano al 72\,\%, equivalente a unos
 37\,000 eventos no reportados en un solo año. Esos eventos no solo no se
@@ -995,6 +996,30 @@ menor F1 son también las de menor soporte.}
 \label{fig:ersp}
 \end{figure}
 
+
+La Figura~\ref{fig:confersp} desglosa el comportamiento del clasificador de
+naturaleza celda por celda, con predicción fuera de pliegue sobre los
+6{,}276 casos. La diagonal domina en las clases mayores (Cuidado del
+paciente 94\,\%, Medicación 89\,\%, Gestión de la organización 87\,\%,
+infecciones 86\,\%) y las confusiones no son aleatorias sino
+\textbf{semánticas}: \emph{Insumos} se desplaza hacia \emph{Dispositivo}
+(16\,\% de su fila), \emph{Procedimiento} hacia \emph{Cuidado del paciente}
+(17\,\%) y \emph{Comportamiento} hacia \emph{Gestión de la organización}
+(20\,\%) --- precisamente los pares que la propia taxonomía deja
+colindantes. El modelo duda donde un codificador humano también dudaría, lo
+que orienta la mejora hacia reglas de desambiguación específicas de esas
+fronteras y no hacia un cambio de arquitectura.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{figuras/fig6_confusion_ersp.pdf}
+\caption{Matriz de confusión de la naturaleza del evento (9 clases) sobre el
+corpus en español, con predicción fuera de pliegue ($n$ = 6{,}276). Cada
+celda muestra el conteo y el porcentaje de la fila; la referencia es la
+codificación experta (Anexo 02).}
+\label{fig:confersp}
+\end{figure}
+
 \subsection{Discusión}
 El desglose completo se representa en la Figura~
 ef{fig:ersp}. Las clases
@@ -1135,7 +1160,7 @@ una decisión de gestión: \textbf{priorizar} y \textbf{asignar responsable}.
 \subsection{Operacionalización de la matriz de priorización}
 La priorización no emplea un criterio propio sino el instrumento normativo
 vigente: la \emph{Matriz de Priorización de Impactos en Salud}, que la
-Directiva N.º 7-OGCyH-ESSALUD-2020 cita en su artículo 5.13 como herramienta de
+directiva institucional de calidad de 2020 cita en su artículo 5.13 como herramienta de
 gestión. Esto sitúa el aporte del trabajo en el lugar correcto: no propone una
 métrica de prioridad, sino que \emph{automatiza el cálculo} de una que la
 institución ya reconoce.
@@ -1448,15 +1473,15 @@ Plan 2021--2030: Towards eliminating avoidable harm in health care}. Ginebra:
 WHO, 2021.
 
 % --- normativa institucional
-\bibitem{directiva02} EsSalud, \emph{Directiva de Eventos Adversos},
-GG-ESSALUD-2021, Anexo 02: taxonomía de eventos adversos; Anexo 03: escala de
-severidad.
-\bibitem{directiva7} EsSalud, \emph{Directiva N.º 7-OGCyH-ESSALUD-2020}:
-gestión del reporte de eventos adversos y seguridad del paciente.
-\bibitem{cifras} EsSalud, \emph{EsSalud en Cifras: Informativo Mensual},
-edición definitiva de diciembre de 2025, publicada el 26 de marzo de 2026.
-Estadística Institucional. [En línea]. Disponible en:
-\url{https://www.gob.pe/institucion/essalud/informes-publicaciones/6505357-essalud-en-cifras-informativo-mensual-2025}
+\bibitem{directiva02} Institución peruana de salud (referencia
+reservada), \emph{Directiva institucional de eventos adversos}, 2021.
+Anexo 02: taxonomía de eventos adversos; Anexo 03: escala de severidad.
+\bibitem{directiva7} Institución peruana de salud (referencia
+reservada), \emph{Directiva institucional de gestión del reporte de
+eventos adversos y seguridad del paciente}, 2020.
+\bibitem{cifras} Institución peruana de salud (referencia reservada),
+\emph{Informativo estadístico institucional}, edición de diciembre de
+2025.
 \end{thebibliography}
 
 

@@ -1,0 +1,140 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\definecolor{granate}{HTML}{7B1522}
+\usepackage[colorlinks=true, urlcolor=granate, linkcolor=granate]{hyperref}
+\setlength{\parskip}{4pt}
+
+\title{\color{granate}\textbf{Metodología de búsqueda de información\\y construcción del estado del arte}}
+\author{Carlos Pérez Pérez\\
+\small Maestría en Inteligencia Artificial · Universidad Nacional de Ingeniería\\
+\small MIA-10 Procesamiento del Lenguaje Natural · carlosperez100@gmail.com}
+\date{16 de agosto de 2026}
+
+\begin{document}
+\maketitle
+
+\noindent Este anexo documenta el método con que se identificó, seleccionó y
+verificó la literatura del trabajo \emph{Detección automática de eventos
+adversos hospitalarios en notas clínicas}. El artículo principal cita 34
+fuentes; aquí se explica cómo se llegó a ellas.
+
+\section{Estrategia general: cinco ejes temáticos}
+
+La búsqueda no fue una sola consulta amplia sino \textbf{cinco búsquedas
+dirigidas}, una por cada eje que la pregunta de investigación exige cubrir.
+Definir primero los ejes evita el sesgo de acumular literatura de un solo
+frente:
+
+\begin{center}
+\begin{tabular}{@{}p{4.6cm}p{9.6cm}@{}}
+\toprule
+\textbf{Eje} & \textbf{Qué debía responder la literatura} \\
+\midrule
+1. Epidemiología del evento adverso & ¿Cuál es la magnitud del daño y del subregistro? \\
+2. PLN sobre texto clínico & ¿Qué desempeño alcanza leer notas frente a usar códigos? \\
+3. Modelos de lenguaje clínicos & ¿Qué arquitecturas existen y cuál es su límite (ventana)? \\
+4. Supervisión débil & ¿Cómo etiquetar corpus masivos sin anotación manual? \\
+5. Validez y confiabilidad & ¿Cómo demostrar que un modelo acierta por la razón correcta y cómo medir el acuerdo humano? \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Fuentes consultadas}
+
+\begin{itemize}[leftmargin=1.4em, itemsep=2pt]
+  \item \textbf{Literatura biomédica revisada por pares:} PubMed y Google
+  Scholar (ejes 1, 2 y 5): JAMA, Health Affairs, NEJM, PLoS Medicine,
+  J.~Biomedical Informatics, JAMIA.
+  \item \textbf{Literatura de PLN y aprendizaje automático:} arXiv, ACL
+  Anthology y actas de NAACL/EMNLP (ejes 3 y 4); Nature Machine
+  Intelligence (eje 5).
+  \item \textbf{Normativa institucional:} las directivas institucionales peruanas de seguridad del
+  paciente (2020 y 2021, Anexos 02 y 03; referencia reservada), Plan Global de Seguridad del
+  Paciente OMS 2021--2030.
+  \item \textbf{Documentación técnica y repositorios:} PhysioNet (MIMIC-IV y
+  su \emph{Data Use Agreement}), Hugging Face (fichas de modelos),
+  scikit-learn.
+  \item \textbf{Rankings especializados:} MTEB/MMTEB (pestaña de
+  clasificación) e IberBench para español. Se excluyó de forma
+  \emph{documentada} el Open LLM Leaderboard por estar archivado por sus
+  autores.
+\end{itemize}
+
+\section{Términos de búsqueda}
+
+Combinaciones en inglés y español, ajustadas por eje. Ejemplos
+representativos:
+
+\begin{itemize}[leftmargin=1.4em, itemsep=1pt]
+  \item \texttt{"adverse event" AND "natural language processing" AND
+  (detection OR surveillance)}
+  \item \texttt{"discharge summaries" AND (classification OR "text mining")}
+  \item \texttt{clinical BERT / ClinicalBERT / BioBERT / Longformer clinical
+  / long document transformer}
+  \item \texttt{"weak supervision" AND (clinical OR biomedical); Snorkel}
+  \item \texttt{"shortcut learning"; "hospital-specific" confounding
+  radiograph; kappa PABAK prevalence paradox}
+  \item \texttt{eventos adversos subregistro; seguridad del paciente
+  notificación voluntaria Perú}
+\end{itemize}
+
+\section{Bola de nieve desde artículos semilla}
+
+Identificado un artículo central por eje, se rastrearon sus referencias
+(hacia atrás) y sus citantes en Google Scholar (hacia adelante). Cadenas
+principales: Brennan~1991 $\rightarrow$ de~Vries~2008 $\rightarrow$
+Classen~2011 (eje 1); Chapman~2001 $\rightarrow$ Murff~2011 (eje 2);
+Devlin~2019 $\rightarrow$ Lee~2020 $\rightarrow$ Alsentzer~2019
+$\rightarrow$ Beltagy~2020 $\rightarrow$ Li~2022 (eje 3); Ratner~2017 (eje
+4); Geirhos~2020 $\rightarrow$ Zech~2018, y Cohen~1960 $\rightarrow$
+Landis--Koch~1977 $\rightarrow$ Feinstein--Cicchetti~1990 $\rightarrow$
+Byrt~1993 (eje 5).
+
+\section{Criterios de inclusión y exclusión}
+
+\begin{center}
+\begin{tabular}{@{}p{7.0cm}p{7.0cm}@{}}
+\toprule
+\textbf{Se incluyó} & \textbf{Se excluyó} \\
+\midrule
+Revisión por pares, normativa oficial o documentación técnica primaria &
+Blogs, tutoriales y fuentes sin arbitraje \\
+Métricas pertinentes a \emph{clasificación} de documentos &
+Benchmarks de generación o razonamiento (MMLU, GPQA) \\
+Estudios con estándar de referencia declarado &
+Cifras sin metodología verificable \\
+Rankings vigentes y mantenidos &
+Rankings archivados (Open LLM Leaderboard) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Verificación de las citas}
+
+Toda cifra citada en el artículo se contrastó contra su \textbf{fuente
+primaria} (el resumen o el texto del estudio original), no contra citas de
+segunda mano. Además, el 23 de junio de 2026 se realizó una
+\textbf{auditoría de citas} registrada en la bitácora del proyecto:
+verificación uno a uno de autores, año, revista y DOI de cada referencia,
+con corrección de las discrepancias encontradas. Las cifras de los cuatro
+estudios comparados en la Tabla~VI del artículo (Murff 2011, Classen 2011,
+Zech 2018 y Li 2022) se verificaron nuevamente contra la fuente el día de la
+incorporación de esa tabla.
+
+\section{Gestión de las referencias}
+
+Las referencias se gestionan como \texttt{bibitem} dentro del propio
+documento LaTeX del artículo (formato IEEEtran), bajo control de versiones
+en el repositorio público del curso:
+\url{https://github.com/carlosperez100/PLN_SP}. El resultado final son
+\textbf{34 referencias} distribuidas en los cinco ejes, cuya síntesis
+visual es el mapa conceptual «Estado del arte: cinco caminos que desembocan
+en este trabajo» incluido en la carpeta de entrega.
+
+\end{document}

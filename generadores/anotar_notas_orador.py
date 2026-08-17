@@ -80,6 +80,20 @@ NOTAS = [
     "ClinicalBERT al ampliar la ventana — justo lo que mis datos "
     "confirman por otra via.",
 
+    # 6b · Mapa del estado del arte (imagen)
+    "Narrarlo carril por carril, una frase cada uno (90 segundos): "
+    "(1) EL PROBLEMA: desde 1991 sabemos que el hospital dana; Classen "
+    "midio que lo voluntario ve la decima parte. (2) PLN CLINICO: Chapman "
+    "resolvio las negaciones; Murff demostro en JAMA que leer la nota gana "
+    "a los codigos. (3) MODELOS: de BERT (512 tokens) a ModernBERT 2025 "
+    "(8,192) — la evolucion de la familia ES la ventana. (4) SUPERVISION "
+    "DEBIL: Stanford propuso etiquetar con reglas; el precio es auditarlas "
+    "— y eso hice. (5) VALIDEZ: Zech y Geirhos avisaron que la metrica "
+    "bonita puede mentir; me paso con el 0.973 y lo corregi. REMATE "
+    "senalando la caja derecha: 'mi trabajo toma una pieza de cada camino "
+    "— y los caminos 4 y 5 son donde esta mi aporte'. El pie de pagina "
+    "lista los 7 modos de fallo por si preguntan.",
+
     # 7 · Seleccion del modelo
     "Antes de comparar hay que decidir que modelos son ADMISIBLES: filtros "
     "duros documentados. El F4 es el que casi nadie aplica: PhysioNet "
@@ -374,10 +388,46 @@ NOTAS = [
     "para la gestion, el aporte no es una metrica alta: es una metrica "
     "en la que se puede CONFIAR. El codigo es publico, la bitacora es "
     "auditable y el sistema ya habla espanol. Muchas gracias.",
+    # Anexo A · ROC
+    "Lamina de respaldo para preguntas. La curva ROC completa: el punto "
+    "marcado es el umbral por defecto (sens 0.762, esp 0.770). Si piden "
+    "otro punto de operacion: el umbral no se ajusto para no contaminar "
+    "el conjunto de prueba — esta declarado en limitaciones.",
+
+    # Anexo B · Matriz de confusion
+    "Respaldo. VP 5,761 · FP 1,502 · FN 1,796 · VN 5,026 sobre el test "
+    "balanceado. El FN es el error caro en seguridad del paciente: por "
+    "eso la sensibilidad es la metrica prioritaria y el sistema opera "
+    "como cribado.",
+
+    # Anexo C · Efecto ventana
+    "Respaldo del argumento central: mismo algoritmo, mismos datos, solo "
+    "cambia cuanto texto ve — F1-macro cae 28%. Es la 'prueba de la "
+    "ventana' que explica por que el transformer pierde y por que "
+    "ModernBERT (8,192 tokens) es el candidato correcto.",
+
+    # Anexo D · Clases del espanol
+    "Respaldo del corpus peruano: F1 por naturaleza con etiqueta de oro. "
+    "Cuidado del Paciente 0.92, IAAS 0.88, Medicacion 0.88... y el "
+    "hallazgo institucional: Gestion de la Organizacion, inviable en "
+    "MIMIC (n=24, F1 cero), aqui 0.85 con ~1,400 ejemplos.",
+    # Anexo E · Matriz de confusion ERSP (sugerencia del docente)
+    "Esta matriz responde la sugerencia del docente: el comportamiento de "
+    "las 9 naturalezas, celda por celda, sobre 6,276 casos out-of-fold. La "
+    "diagonal manda: Cuidado del paciente 94%, Medicacion 89%, Gestion 87%, "
+    "IAAS 86%. Las confusiones NO son aleatorias — son SEMANTICAS y "
+    "defendibles: Insumos se confunde con Dispositivo (16%) porque la "
+    "frontera insumo/equipo es borrosa hasta para humanos; Procedimiento "
+    "se va a Cuidado del paciente (17%) porque el relato mezcla el acto con "
+    "el cuidado; Comportamiento se va a Gestion (20%) porque un problema "
+    "conductual suele narrarse como problema organizacional. Las clases "
+    "grandes casi no se contaminan entre si. Cierre: 'el modelo se equivoca "
+    "donde un humano tambien dudaria — en las fronteras semanticas de la "
+    "taxonomia, no al azar'.",
 ]
 
 pr = Presentation(P)
-assert len(pr.slides) == len(NOTAS) == 29, (
+assert len(pr.slides) == len(NOTAS) == 35, (
     f"desfase: {len(pr.slides)} laminas vs {len(NOTAS)} notas")
 
 for slide, nota in zip(pr.slides, NOTAS):
