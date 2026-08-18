@@ -387,7 +387,7 @@ vinetas(s, MARGEN, y + Inches(0.1), Inches(6.1), [
      "no del curso natural de la enfermedad del paciente."),
     ("Magnitud.", "Están entre las 10 primeras causas de muerte y "
      "discapacidad en el mundo (OMS)."),
-    ("En el Perú.", "La Directiva GG-ESSALUD-2021 los regula y define su "
+    ("En el Perú.", "La directiva institucional de 2021 los regula y define su "
      "notificación obligatoria."),
 ], sep=Inches(0.78))
 
@@ -414,7 +414,7 @@ s, y = lamina("La información existe, pero nadie la lee",
               seccion="2 · Planteamiento del problema")
 w = Inches(4.02)
 for i, (c, r, p) in enumerate([
-        ("~72 %", "de los eventos adversos no se notifican en EsSalud",
+        ("~72 %", "de los eventos adversos no se notifican en la institución",
          "unos 37,000 al año"),
         ("100 %", "de las notas clínicas contienen esa información en texto libre",
          "no explotable a mano"),
@@ -447,7 +447,7 @@ nota(s, Inches(6.0), "Pregunta de investigación:  ¿es posible detectar "
 s, y = lamina("Objetivos del trabajo", seccion="2 · Planteamiento del problema")
 nota(s, y, "Objetivo general — diseñar, implementar y validar un canal de PLN "
      "que detecte y priorice eventos adversos automáticamente, con miras a su "
-     "transferencia a EsSalud.", color=GRANATE, fondo=GRANATE_CLARO)
+     "transferencia a la institución de destino.", color=GRANATE, fondo=GRANATE_CLARO)
 datos = [["", "Objetivo específico", "Estado al día de hoy"],
          ["OE1", "Construir un corpus etiquetado por supervisión débil",
           "Cumplido · 70,000 notas clínicas"],
@@ -1148,7 +1148,7 @@ nota(s, y + Inches(3.75), "La lectura transversal: el PLN supera a la "
 s, y = lamina("Del texto a la decisión de gestión",
               seccion="4.6 · Destino aplicado",
               bajada="La salida del canal de PLN alimenta la matriz de "
-              "priorización vigente en EsSalud. Esto ya no es PLN: es el "
+              "priorización vigente en la institución. Esto ya no es PLN: es el "
               "destino del trabajo.")
 w, h = Inches(2.9), Inches(1.35)
 for i, (t, sub, col) in enumerate([
@@ -1183,7 +1183,7 @@ caja(s, Inches(8.45), y + Inches(2.28), Inches(4.0), Inches(1.2),
      "prioridad: una úlcera de impacto alto salía verde. Ahora, con n<8, se "
      "usa corte absoluto sobre G.", tam=12, color=TINTA, interlinea=1.2)
 nota(s, Inches(5.85), "La matriz no es una propuesta del autor: la Directiva "
-     "N.º 7-OGCyH-ESSALUD-2020 la cita textualmente en su artículo 5.13 como "
+     "institucional de calidad de 2020 la cita textualmente en su artículo 5.13 como "
      "el instrumento vigente.")
 
 # =========================================================== 22b. EL APORTE
@@ -1347,7 +1347,7 @@ refs = [
     "Clinical Epidemiology, 1993.",
     "de Vries, E. et al. The incidence and nature of in-hospital adverse "
     "events. BMJ Quality & Safety, 2008.",
-    "EsSalud. Directiva GG-ESSALUD-2021: registro, notificación y gestión "
+    "Institución peruana de salud (ref. reservada). Directiva de 2021: registro, notificación y gestión "
     "de los ERSP. Anexos 02 y 03.",
 ]
 yy = y + Inches(0.02)
