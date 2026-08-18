@@ -86,6 +86,32 @@ Docente: Dr. Wester Zela Moraya</p>
   <div class="cifra"><b>0.644</b><span>Kappa inter-observador</span></div>
 </div>
 
+<h2 style="color:#7B1522">Actualización — 17 de agosto de 2026</h2>
+<div class="destacado">
+<p><b>Trabajo final expuesto el 16 de agosto.</b> Novedades desde la versión
+anterior de este sitio:</p>
+<ul>
+<li><b>Artículo ampliado a 14 páginas</b>: tabla comparativa con la
+literatura (Murff 2011, Classen 2011, Zech 2018, Li 2022), figura del flujo
+completo, matriz de confusión 9×9 del corpus en español y conclusiones que
+responden al problema original.</li>
+<li><b>Validación experta ampliada</b>: 163 casos con juicio experto (78
+doble-anotados); sensibilidad 0.945 contra el consenso y 0.914
+[0.849–0.953] en el análisis ampliado.</li>
+<li><b>Corpus en español (etiqueta de oro)</b>: se añadió la predicción del
+<i>código de evento específico</i> (41 clases, exactitud 0.761) y la matriz
+de confusión de las 9 naturalezas: las confusiones son semánticas, no
+aleatorias.</li>
+<li><b>Fase 13 en curso</b> (modelos modernos, fine-tuning, 100&nbsp;%
+local): un LLM generativo local (Llama&nbsp;3.2, zero-shot) marcó evento en
+68/68 casos del consenso experto — kappa 0.000: sin ajuste no discrimina.
+El fine-tuning de <b>BioClinical ModernBERT</b> (2025, ventana 4×) está en
+ejecución; con una época ya iguala al Bio_ClinicalBERT de la fase 11 y su
+kappa lo supera (0.441 frente a 0.325). Resultados finales en el
+repositorio.</li>
+</ul>
+</div>
+
 <h2>Qué resuelve</h2>
 <p>La notificación de eventos adversos en EsSalud es manual y voluntaria: en
 2025 se registraron 515&thinsp;493 egresos hospitalarios y se notificaron
